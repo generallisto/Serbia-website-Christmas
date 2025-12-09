@@ -1,0 +1,1401 @@
+/* ===== CSS ДЛЯ САЙТА "СЕРБИЯ" ===== */
+/* Этно-минимализм + современный урбанизм */
+/* Авторский дизайн для лучшего представления страны */
+
+/* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===== */
+:root {
+  /* ЦВЕТА СЕРБСКОГО ФЛАГА И ТРАДИЦИЙ */
+  --serbian-blue: #0c2e60;        /* Глубокий синий - небо, традиции, духовность */
+  --serbian-red: #c8102e;         /* Яркий красный - энергия, страсть, кровь */
+  --serbian-gold: #f8c300;        /* Золотой - богатство, свет, гостеприимство */
+  --serbian-white: #f5f0e8;       /* Кремовый - чистота, ткань, стены монастырей */
+  --serbian-earth: #8b4513;       /* Коричневый - земля, дерево, традиции */
+  
+  /* СОВРЕМЕННЫЕ АКЦЕНТЫ */
+  --urban-dark: #1a1a1a;          /* Чёрный - Белград ночью, современность */
+  --urban-light: #ffffff;         /* Белый - чистота, минимализм */
+  --urban-gray: #e8e6e1;          /* Серый - бетон, городская эстетика */
+  
+  /* ДОПОЛНИТЕЛЬНЫЕ ЦВЕТА */
+  --text-primary: #2c2c2c;        /* Основной текст */
+  --text-secondary: #666666;      /* Вторичный текст */
+  --text-light: #888888;          /* Светлый текст */
+  --border-color: rgba(12, 46, 96, 0.1); /* Цвет границ */
+  
+  /* ТИПОГРАФИЯ */
+  --font-heading: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Manrope', 'Helvetica Neue', sans-serif;
+  --font-accent: 'Raleway', 'Arial', sans-serif;
+  
+  /* ТЕНИ И ЭФФЕКТЫ */
+  --shadow-soft: 0 5px 20px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-hard: 0 15px 40px rgba(0, 0, 0, 0.12);
+  --shadow-glow-red: 0 10px 30px rgba(200, 16, 46, 0.3);
+  --shadow-glow-blue: 0 10px 30px rgba(12, 46, 96, 0.3);
+  --shadow-glow-gold: 0 10px 30px rgba(248, 195, 0, 0.3);
+  
+  /* СКОРОСТИ АНИМАЦИЙ */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --transition-slow: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* РАДИУСЫ */
+  --radius-small: 6px;
+  --radius-medium: 12px;
+  --radius-large: 20px;
+  --radius-round: 50px;
+  --radius-circle: 50%;
+  
+  /* ПРОБЕЛЫ */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  --space-xxl: 8rem;
+}
+
+/* ===== БАЗОВЫЕ СТИЛИ ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  scroll-padding-top: 100px;
+}
+
+body {
+  font-family: var(--font-body);
+  line-height: 1.7;
+  color: var(--text-primary);
+  background-color: var(--serbian-white);
+  overflow-x: hidden;
+  position: relative;
+  font-weight: 400;
+}
+
+/* ФОНОВЫЕ ОРНАМЕНТЫ В СТИЛЕ СЕРБСКОЙ ВЫШИВКИ */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Орнамент в углах в стиле пиротских ковров */
+    radial-gradient(circle at 10% 10%, rgba(200, 16, 46, 0.03) 0%, transparent 15%),
+    radial-gradient(circle at 90% 10%, rgba(12, 46, 96, 0.03) 0%, transparent 15%),
+    radial-gradient(circle at 10% 90%, rgba(248, 195, 0, 0.03) 0%, transparent 15%),
+    radial-gradient(circle at 90% 90%, rgba(139, 69, 19, 0.03) 0%, transparent 15%),
+    /* Линии в стиле традиционного орнамента */
+    linear-gradient(90deg, transparent 49%, rgba(12, 46, 96, 0.02) 50%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, rgba(200, 16, 46, 0.02) 50%, transparent 51%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* СКРЫТЬ СКРОЛЛБАР ДЛЯ ЛУЧШЕГО ВИДА */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--serbian-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--serbian-red), var(--serbian-blue));
+  border-radius: var(--radius-round);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, var(--serbian-blue), var(--serbian-red));
+}
+
+/* ===== ТИПОГРАФИЯ В СТИЛЕ СЕРБСКОЙ КИРИЛЛИЦЫ ===== */
+h1, h2, h3, h4, h5, h6,
+.heading-primary,
+.heading-secondary,
+.logo,
+.hero-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: var(--space-md);
+}
+
+h1 {
+  font-size: 4.5rem;
+  background: linear-gradient(135deg, var(--serbian-blue) 0%, var(--serbian-red) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(to right, var(--serbian-red), var(--serbian-gold));
+  border-radius: 2px;
+}
+
+h2 {
+  font-size: 3.2rem;
+  color: var(--serbian-blue);
+  position: relative;
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+}
+
+h2::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, var(--serbian-red), var(--serbian-gold));
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: 1.8rem;
+  color: var(--urban-dark);
+  margin-bottom: var(--space-sm);
+}
+
+h4 {
+  font-size: 1.4rem;
+  color: var(--serbian-blue);
+  margin-bottom: var(--space-sm);
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-md);
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.lead {
+  font-size: 1.3rem;
+  color: var(--serbian-blue);
+  font-weight: 300;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.small-text {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* ===== КОНТЕЙНЕРЫ И СЕТКИ ===== */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.container-narrow {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.container-wide {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+.section-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, 
+    transparent, 
+    rgba(12, 46, 96, 0.2), 
+    rgba(200, 16, 46, 0.2), 
+    rgba(12, 46, 96, 0.2), 
+    transparent);
+  margin: var(--space-xl) 0;
+}
+
+/* СЕТКИ В СТИЛЕ СОВРЕМЕННОГО УРБАНИЗМА */
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-auto {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* ===== НАВИГАЦИЯ - МИКС ЭТНО И УРБАН ===== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--space-md) 0;
+  z-index: 1000;
+  transition: var(--transition-normal);
+  background: rgba(245, 240, 232, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
+}
+
+.navbar.scrolled {
+  padding: var(--space-sm) 0;
+  background: rgba(245, 240, 232, 0.98);
+  box-shadow: var(--shadow-medium);
+  border-bottom-color: rgba(12, 46, 96, 0.15);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 2.2rem;
+  color: var(--serbian-blue);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: 900;
+  transition: var(--transition-normal);
+}
+
+.logo span {
+  color: var(--serbian-red);
+  position: relative;
+}
+
+.logo span::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--serbian-gold);
+  transform: scaleX(0);
+  transition: var(--transition-normal);
+  transform-origin: right;
+}
+
+.logo:hover span::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.logo:hover {
+  transform: translateY(-2px);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-xl);
+  list-style: none;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--serbian-blue);
+  font-weight: 600;
+  font-size: 1rem;
+  position: relative;
+  padding: var(--space-xs) 0;
+  transition: var(--transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-accent);
+}
+
+.nav-link::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--serbian-red), var(--serbian-gold));
+  transition: var(--transition-normal);
+}
+
+.nav-link:hover {
+  color: var(--serbian-red);
+}
+
+.nav-link:hover::before {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: var(--serbian-red);
+}
+
+.nav-link.active::before {
+  width: 100%;
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--serbian-blue);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-small);
+  transition: var(--transition-normal);
+}
+
+.mobile-toggle:hover {
+  background: rgba(12, 46, 96, 0.1);
+  color: var(--serbian-red);
+}
+
+/* ===== ГЕРОЙ СЕКЦИЯ - ПАРАЛЛАКС И ДРАМА ===== */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 100px;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+.hero-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    rgba(12, 46, 96, 0.85) 0%, 
+    rgba(200, 16, 46, 0.7) 50%, 
+    rgba(248, 195, 0, 0.3) 100%);
+  z-index: 1;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.7) contrast(1.1);
+  animation: kenburns 30s infinite alternate;
+}
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translateX(0) translateY(0);
+  }
+  100% {
+    transform: scale(1.1) translateX(-20px) translateY(-20px);
+  }
+}
+
+.hero-content {
+  text-align: center;
+  color: var(--serbian-white);
+  max-width: 900px;
+  padding: var(--space-xl);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 5.5rem;
+  margin-bottom: var(--space-md);
+  color: var(--serbian-white);
+  text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: var(--space-xl);
+  opacity: 0.9;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* ===== КНОПКИ - СОВРЕМЕННЫЕ С ЭТНИЧЕСКИМИ АКЦЕНТАМИ ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-round);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: var(--transition-normal);
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: var(--transition-normal);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--serbian-red) 0%, #e03a5f 100%);
+  color: var(--serbian-white);
+  box-shadow: var(--shadow-glow-red);
+}
+
+.btn-primary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(200, 16, 46, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--serbian-white);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--serbian-white);
+  transform: translateY(-5px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--serbian-blue);
+  border: 2px solid var(--serbian-blue);
+}
+
+.btn-outline:hover {
+  background: var(--serbian-blue);
+  color: var(--serbian-white);
+  transform: translateY(-5px);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--serbian-gold) 0%, #ffd700 100%);
+  color: var(--serbian-blue);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+.btn-accent:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(248, 195, 0, 0.4);
+}
+
+.btn-group {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  margin-top: var(--space-xl);
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+/* ===== КАРТОЧКИ - МИНИМАЛИЗМ С ТРАДИЦИОННЫМИ ТЕКСТУРАМИ ===== */
+.card {
+  background: var(--serbian-white);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+  transition: var(--transition-normal);
+  height: 100%;
+  position: relative;
+  border: 1px solid var(--border-color);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--serbian-red), var(--serbian-gold));
+  z-index: 1;
+}
+
+.card:hover {
+  transform: translateY(-15px);
+  box-shadow: var(--shadow-hard);
+}
+
+.card-image {
+  height: 250px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
+  pointer-events: none;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-slow);
+}
+
+.card:hover .card-image img {
+  transform: scale(1.1);
+}
+
+.card-content {
+  padding: var(--space-lg);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  color: var(--serbian-red);
+  margin-bottom: var(--space-md);
+  transition: var(--transition-normal);
+}
+
+.card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+  color: var(--serbian-blue);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-sm);
+  color: var(--serbian-blue);
+}
+
+.card-text {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ===== ГАЛЕРЕЯ - СОВРЕМЕННАЯ СЕТКА С ЭТНИЧЕСКИМИ ЭФФЕКТАМИ ===== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.gallery-item {
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  height: 280px;
+  position: relative;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-normal);
+}
+
+.gallery-item:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-hard);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-slow);
+  filter: brightness(0.9) contrast(1.1);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.08);
+  filter: brightness(1) contrast(1.2);
+}
+
+.gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(12, 46, 96, 0.85), transparent 70%);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-lg);
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-title {
+  color: var(--serbian-white);
+  font-size: 1.2rem;
+  font-weight: 600;
+  transform: translateY(20px);
+  transition: var(--transition-normal);
+  font-family: var(--font-accent);
+}
+
+.gallery-item:hover .gallery-title {
+  transform: translateY(0);
+}
+
+/* ===== ПРИРОДА - ОРГАНИЧЕСКИЕ ФОРМЫ И ТЕКСТУРЫ ===== */
+.nature-section {
+  background: linear-gradient(to bottom, #f9f9f9, var(--serbian-white));
+  position: relative;
+  overflow: hidden;
+}
+
+.nature-section::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(12, 46, 96, 0.05) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.nature-section::after {
+  content: "";
+  position: absolute;
+  bottom: -100px;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(200, 16, 46, 0.05) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.nature-card {
+  position: relative;
+  height: 400px;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+  z-index: 1;
+}
+
+.nature-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-slow);
+}
+
+.nature-card:hover img {
+  transform: scale(1.05);
+}
+
+.nature-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--space-xl);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  color: var(--serbian-white);
+  z-index: 2;
+}
+
+.nature-content h3 {
+  color: var(--serbian-white);
+  font-size: 2rem;
+  margin-bottom: var(--space-sm);
+}
+
+.nature-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+}
+
+/* ===== КУХНЯ - ТЁПЛЫЕ ЦВЕТА И ТЕКСТУРЫ ЕДЫ ===== */
+.cuisine-section {
+  background-color: var(--serbian-white);
+  position: relative;
+}
+
+.cuisine-section::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, 
+    transparent, 
+    rgba(139, 69, 19, 0.1), 
+    rgba(248, 195, 0, 0.2), 
+    rgba(139, 69, 19, 0.1), 
+    transparent);
+}
+
+.food-card {
+  text-align: center;
+  padding: var(--space-xl);
+  border-radius: var(--radius-medium);
+  background: var(--serbian-white);
+  transition: var(--transition-normal);
+  border: 1px solid rgba(139, 69, 19, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.food-card:hover {
+  background: var(--serbian-white);
+  box-shadow: var(--shadow-hard);
+  border-color: rgba(139, 69, 19, 0.2);
+  transform: translateY(-10px);
+}
+
+.food-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--serbian-gold), var(--serbian-earth));
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+
+.food-card:hover::before {
+  opacity: 1;
+}
+
+.food-image {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+  margin: 0 auto var(--space-lg);
+  border: 5px solid var(--serbian-white);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  transition: var(--transition-normal);
+}
+
+.food-card:hover .food-image {
+  transform: scale(1.1) rotate(5deg);
+  border-color: var(--serbian-gold);
+}
+
+.food-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-slow);
+}
+
+.food-card:hover .food-image img {
+  transform: scale(1.1);
+}
+
+.food-card h3 {
+  color: var(--serbian-earth);
+  margin-bottom: var(--space-sm);
+  transition: var(--transition-normal);
+}
+
+.food-card:hover h3 {
+  color: var(--serbian-red);
+}
+
+.food-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* ===== ПОДВАЛ - ТРАДИЦИОННЫЙ СТИЛЬ С СОВРЕМЕННОЙ ТИПОГРАФИЕЙ ===== */
+.footer {
+  background: linear-gradient(135deg, var(--serbian-blue) 0%, #0a2552 100%);
+  color: var(--serbian-white);
+  padding: var(--space-xxl) 0 var(--space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(248, 195, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(200, 16, 46, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.footer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--serbian-red), var(--serbian-gold), var(--serbian-red));
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-logo {
+  font-size: 2.5rem;
+  color: var(--serbian-white);
+  margin-bottom: var(--space-md);
+  font-weight: 900;
+}
+
+.footer-logo span {
+  color: var(--serbian-gold);
+}
+
+.footer-description {
+  opacity: 0.8;
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.social-links {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.social-link {
+  width: 45px;
+  height: 45px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--serbian-white);
+  text-decoration: none;
+  transition: var(--transition-normal);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-link:hover {
+  background: var(--serbian-red);
+  transform: translateY(-5px) rotate(10deg);
+  border-color: var(--serbian-red);
+}
+
+.footer-heading {
+  font-size: 1.3rem;
+  margin-bottom: var(--space-lg);
+  color: var(--serbian-white);
+  position: relative;
+  padding-bottom: var(--space-sm);
+  font-weight: 700;
+  font-family: var(--font-accent);
+}
+
+.footer-heading::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--serbian-gold);
+}
+
+.footer-links {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.footer-links i {
+  color: var(--serbian-gold);
+  font-size: 0.9rem;
+  width: 20px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--transition-normal);
+  font-size: 0.95rem;
+}
+
+.footer-links a:hover {
+  color: var(--serbian-gold);
+  padding-left: 5px;
+}
+
+.copyright {
+  text-align: center;
+  padding-top: var(--space-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 0.8s ease forwards;
+}
+
+.fade-in-right {
+  opacity: 0;
+  animation: fadeInRight 0.8s ease forwards;
+}
+
+.pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.float {
+  animation: float 3s infinite ease-in-out;
+}
+
+.delay-1 {
+  animation-delay: 0.2s;
+}
+
+.delay-2 {
+  animation-delay: 0.4s;
+}
+
+.delay-3 {
+  animation-delay: 0.6s;
+}
+
+.delay-4 {
+  animation-delay: 0.8s;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1200px) {
+  html {
+    font-size: 15px;
+  }
+  
+  h1 {
+    font-size: 4rem;
+  }
+  
+  h2 {
+    font-size: 2.8rem;
+  }
+  
+  .hero-title {
+    font-size: 4.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-title {
+    font-size: 3.5rem;
+  }
+  
+  .nav-links {
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 var(--space-sm);
+  }
+  
+  h1 {
+    font-size: 3rem;
+  }
+  
+  h2 {
+    font-size: 2.4rem;
+  }
+  
+  .hero-title {
+    font-size: 2.8rem;
+  }
+  
+  section {
+    padding: var(--space-xl) 0;
+  }
+  
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--serbian-white);
+    flex-direction: column;
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-hard);
+    gap: var(--space-md);
+    z-index: 1000;
+  }
+  
+  .nav-links.active {
+    display: flex;
+  }
+  
+  .mobile-toggle {
+    display: block;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-content {
+    padding: var(--space-md);
+  }
+  
+  .lead {
+    font-size: 1.1rem;
+  }
+}
+
+/* ===== СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ СЕРБСКОЙ ТЕМЫ ===== */
+/* Орнаментные разделители */
+.ornament-divider {
+  height: 20px;
+  width: 100%;
+  background-image: 
+    repeating-linear-gradient(90deg, 
+      transparent, 
+      transparent 10px, 
+      var(--serbian-red) 10px, 
+      var(--serbian-red) 12px,
+      transparent 12px,
+      transparent 22px,
+      var(--serbian-blue) 22px,
+      var(--serbian-blue) 24px);
+  margin: var(--space-xl) 0;
+  opacity: 0.3;
+}
+
+/* Эффект вышивки на некоторых элементах */
+.embroidery-effect {
+  position: relative;
+}
+
+.embroidery-effect::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, 
+    var(--serbian-red), 
+    var(--serbian-gold), 
+    var(--serbian-blue));
+  border-radius: 2px;
+}
+
+/* Текстура старинной бумаги для некоторых блоков */
+.vintage-paper {
+  background-color: var(--serbian-white);
+  background-image: 
+    linear-gradient(rgba(139, 69, 19, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 69, 19, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 1px solid rgba(139, 69, 19, 0.1);
+  border-radius: var(--radius-medium);
+  padding: var(--space-xl);
+}
+
+/* Эффект традиционного ковра */
+.rug-effect {
+  background: 
+    radial-gradient(circle at 50% 0%, rgba(200, 16, 46, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 100% 50%, rgba(12, 46, 96, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(248, 195, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 0% 50%, rgba(139, 69, 19, 0.1) 0%, transparent 50%);
+  border: 2px solid rgba(139, 69, 19, 0.2);
+  border-radius: var(--radius-medium);
+  position: relative;
+}
+
+.rug-effect::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(139, 69, 19, 0.1);
+  border-radius: calc(var(--radius-medium) - 5px);
+  pointer-events: none;
+}
+
+/* Стиль для цитат в традиционном духе */
+.serbian-quote {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--serbian-blue);
+  padding: var(--space-lg);
+  border-left: 4px solid var(--serbian-red);
+  background: linear-gradient(to right, rgba(12, 46, 96, 0.05), transparent);
+  margin: var(--space-xl) 0;
+  position: relative;
+}
+
+.serbian-quote::before {
+  content: "„";
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  font-size: 4rem;
+  color: var(--serbian-gold);
+  opacity: 0.3;
+  font-family: serif;
+}
+
+.serbian-quote::after {
+  content: "”";
+  position: absolute;
+  bottom: -30px;
+  right: 20px;
+  font-size: 4rem;
+  color: var(--serbian-gold);
+  opacity: 0.3;
+  font-family: serif;
+}
+
+/* ===== УТИЛИТЫ ===== */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.mt-0 { margin-top: 0; }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+.pt-0 { padding-top: 0; }
+.pt-sm { padding-top: var(--space-sm); }
+.pt-md { padding-top: var(--space-md); }
+.pt-lg { padding-top: var(--space-lg); }
+.pt-xl { padding-top: var(--space-xl); }
+
+.pb-0 { padding-bottom: 0; }
+.pb-sm { padding-bottom: var(--space-sm); }
+.pb-md { padding-bottom: var(--space-md); }
+.pb-lg { padding-bottom: var(--space-lg); }
+.pb-xl { padding-bottom: var(--space-xl); }
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ===== КОНЕЦ CSS ===== */
