@@ -3,31 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СЕРБИЯ | Душа Балкан</title>
+    <title>Сербия | Современный гид</title>
+    <!-- Preconnect для быстрой загрузки -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=Raleway:wght@300;400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Только один шрифт для скорости -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СБРОС ===== */
-        :root {
-            --color-primary: #0c2e60;    /* Глубокий синий - флаг, традиции */
-            --color-secondary: #c8102e;  /* Яркий красный - энергия, страсть */
-            --color-accent: #f8c300;     /* Золотой - богатство, свет */
-            --color-dark: #1a1a1a;       /* Чёрный - современность */
-            --color-light: #f5f0e8;      /* Светлый фон - крем, ткань */
-            --color-text: #2c2c2c;       /* Основной текст */
-            --color-muted: #666;
-            --border-radius: 12px;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
-        }
-        
+        /* ===== СБРОС И БАЗОВЫЕ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        
+        :root {
+            /* СОВРЕМЕННАЯ ТЕМНАЯ ПАЛИТРА (не флаг) */
+            --color-bg: #0a0a0a;
+            --color-surface: #151515;
+            --color-surface-light: #1e1e1e;
+            --color-surface-lighter: #262626;
+            --color-text: #e0e0e0;
+            --color-text-light: #a0a0a0;
+            --color-text-lighter: #666666;
+            --color-primary: #7c3aed; /* Фиолетовый - современный, мистический */
+            --color-primary-light: #8b5cf6;
+            --color-secondary: #10b981; /* Изумрудный - природа, свежесть */
+            --color-accent: #f59e0b; /* Янтарный - тепло, гостеприимство */
+            --color-border: #333333;
+            --color-border-light: #404040;
+            
+            /* ТИПОГРАФИЯ */
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            /* РАДИУСЫ */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            /* ТЕНИ */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            
+            /* АНИМАЦИИ */
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+            --transition-slow: 350ms ease;
         }
         
         html {
@@ -36,300 +59,56 @@
         }
         
         body {
-            font-family: 'Manrope', sans-serif;
-            line-height: 1.7;
+            font-family: var(--font-main);
+            background: var(--color-bg);
             color: var(--color-text);
-            background-color: var(--color-light);
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(200, 16, 46, 0.03) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(12, 46, 96, 0.03) 0%, transparent 20%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-        
-        section {
-            padding: 120px 0;
-            position: relative;
-        }
-        
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(12, 46, 96, 0.2), transparent);
-            margin: 40px 0;
-        }
-        
-        /* ===== ТИПОГРАФИЯ ===== */
-        h1, h2, h3, h4, .logo, .hero-title {
-            font-family: 'Playfair Display', serif;
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.5px;
-        }
-        
-        h1 {
-            font-size: 4.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        h2 {
-            font-size: 3.2rem;
-            color: var(--color-primary);
-            position: relative;
-            display: inline-block;
-            margin-bottom: 3rem;
-        }
-        
-        h2::after {
-            content: "";
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(to right, var(--color-secondary), var(--color-accent));
-            border-radius: 2px;
-        }
-        
-        h3 {
-            font-size: 1.8rem;
-            color: var(--color-dark);
-            margin-bottom: 1rem;
-        }
-        
-        p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: var(--color-muted);
-        }
-        
-        .lead {
-            font-size: 1.3rem;
-            color: var(--color-primary);
-            font-weight: 300;
-            max-width: 700px;
-        }
-        
-        /* ===== НАВИГАЦИЯ ===== */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 25px 0;
-            z-index: 1000;
-            transition: var(--transition);
-            background: rgba(245, 240, 232, 0.92);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(12, 46, 96, 0.08);
-        }
-        
-        nav.scrolled {
-            padding: 15px 0;
-            box-shadow: var(--shadow);
-        }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2.2rem;
-            color: var(--color-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo span {
-            color: var(--color-secondary);
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: var(--color-primary);
-            font-weight: 600;
-            font-size: 1rem;
-            position: relative;
-            padding: 5px 0;
-            transition: var(--transition);
-        }
-        
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--color-secondary);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            color: var(--color-secondary);
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--color-primary);
-            cursor: pointer;
-        }
-        
-        /* ===== ГЕРОЙ СЕКЦИЯ ===== */
-        .hero {
+            line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: 100px;
+            overflow-x: hidden;
         }
         
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* ===== ЛЕНИВАЯ ЗАГРУЗКА ИЗОБРАЖЕНИЙ ===== */
+        img {
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+        
+        img.loaded {
+            opacity: 1;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(110deg, var(--color-surface) 40%, var(--color-surface-light) 50%, var(--color-surface) 60%);
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+            border-radius: var(--radius-md);
+        }
+        
+        @keyframes shine {
+            to {
+                background-position-x: -200%;
+            }
+        }
+        
+        /* ===== КОНТЕЙНЕРЫ И СЕТКИ ===== */
+        .container {
             width: 100%;
-            height: 100%;
-            z-index: -1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
-        .hero-background::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(12, 46, 96, 0.85) 0%, rgba(200, 16, 46, 0.7) 100%);
-            z-index: 1;
+        .container-narrow {
+            max-width: 800px;
         }
         
-        .hero-background img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            filter: brightness(0.7);
+        .section {
+            padding: 80px 0;
         }
         
-        .hero-content {
-            text-align: center;
-            color: white;
-            max-width: 900px;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hero-title {
-            font-size: 5.5rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* ===== КНОПКИ ===== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 18px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--color-secondary) 0%, #e03a5f 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(200, 16, 46, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(200, 16, 46, 0.4);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: white;
-            transform: translateY(-5px);
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-        
-        /* ===== СЕТКА ДЛЯ БЛОКОВ ===== */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+            gap: 24px;
         }
         
         .grid-2 {
@@ -340,109 +119,240 @@
             grid-template-columns: repeat(3, 1fr);
         }
         
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        /* ===== ТИПОГРАФИЯ ===== */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            color: var(--color-text);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--color-text);
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--color-text-light);
+        }
+        
+        .lead {
+            font-size: 1.25rem;
+            color: var(--color-text);
+            max-width: 700px;
+            opacity: 0.9;
+        }
+        
+        /* ===== НАВИГАЦИЯ ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            padding: 16px 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-primary);
+            border-radius: 50%;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        
+        /* ===== ГЕРОЙ СЕКЦИЯ ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        /* ===== КНОПКИ ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            border: none;
+            cursor: pointer;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--color-primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
         /* ===== КАРТОЧКИ ===== */
         .card {
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            transition: all var(--transition-normal);
             height: 100%;
         }
         
         .card:hover {
-            transform: translateY(-15px);
-            box-shadow: var(--shadow-hover);
-        }
-        
-        .card-image {
-            height: 250px;
-            width: 100%;
-            overflow: hidden;
-        }
-        
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
-        
-        .card:hover .card-image img {
-            transform: scale(1.1);
-        }
-        
-        .card-content {
-            padding: 30px;
+            transform: translateY(-8px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-lg);
         }
         
         .card-icon {
-            font-size: 2.5rem;
-            color: var(--color-secondary);
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
         }
         
         /* ===== ГАЛЕРЕЯ ===== */
+        .gallery {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 60px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1px;
+            background: var(--color-border);
         }
         
         .gallery-item {
-            border-radius: var(--border-radius);
+            aspect-ratio: 1;
             overflow: hidden;
-            height: 280px;
             position: relative;
-            cursor: pointer;
+            background: var(--color-surface-light);
         }
         
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
+            transition: transform var(--transition-slow);
         }
         
         .gallery-item:hover img {
-            transform: scale(1.08);
+            transform: scale(1.05);
         }
         
-        .gallery-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(12, 46, 96, 0.8), transparent);
-            display: flex;
-            align-items: flex-end;
-            padding: 25px;
-            opacity: 0;
-            transition: var(--transition);
-        }
-        
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-        
-        .gallery-title {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        /* ===== СЕКЦИЯ ПРИРОДА ===== */
-        .nature-section {
-            background: linear-gradient(to bottom, #f9f9f9, white);
-        }
-        
+        /* ===== ПРИРОДА ===== */
         .nature-card {
             position: relative;
-            height: 400px;
-            border-radius: var(--border-radius);
+            border-radius: var(--radius-lg);
             overflow: hidden;
+            aspect-ratio: 16/9;
         }
         
         .nature-card img {
@@ -451,32 +361,19 @@
             object-fit: cover;
         }
         
-        .nature-content {
+        .nature-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
-            padding: 40px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            color: white;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
         }
         
-        /* ===== СЕКЦИЯ КУХНИ ===== */
-        .cuisine-section {
-            background-color: white;
-        }
-        
+        /* ===== КУХНЯ ===== */
         .food-card {
             text-align: center;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            background: var(--color-light);
-            transition: var(--transition);
-        }
-        
-        .food-card:hover {
-            background: white;
-            box-shadow: var(--shadow-hover);
+            padding: 24px;
         }
         
         .food-image {
@@ -484,9 +381,8 @@
             height: 120px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 auto 25px;
-            border: 5px solid white;
-            box-shadow: var(--shadow);
+            margin: 0 auto 1rem;
+            border: 3px solid var(--color-primary);
         }
         
         .food-image img {
@@ -496,70 +392,25 @@
         }
         
         /* ===== ПОДВАЛ ===== */
-        footer {
-            background: var(--color-primary);
-            color: white;
-            padding: 80px 0 30px;
+        .footer {
+            background: var(--color-surface);
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--color-border);
         }
         
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 60px;
-            margin-bottom: 60px;
-        }
-        
-        .footer-logo {
-            font-size: 2.5rem;
-            color: white;
-            margin-bottom: 20px;
-        }
-        
-        .footer-description {
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .social-link {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .social-link:hover {
-            background: var(--color-secondary);
-            transform: translateY(-5px);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
         }
         
         .footer-heading {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            color: white;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .footer-heading::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background: var(--color-accent);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-light);
         }
         
         .footer-links {
@@ -567,58 +418,46 @@
         }
         
         .footer-links li {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--color-text-light);
             text-decoration: none;
-            transition: var(--transition);
+            transition: color var(--transition-fast);
         }
         
         .footer-links a:hover {
-            color: var(--color-accent);
-            padding-left: 5px;
+            color: var(--color-primary);
         }
         
         .copyright {
             text-align: center;
             padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0.7;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-lighter);
             font-size: 0.9rem;
-        }
-        
-        /* ===== АНИМАЦИИ ===== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in {
-            animation: fadeInUp 0.8s ease forwards;
         }
         
         /* ===== АДАПТИВНОСТЬ ===== */
         @media (max-width: 992px) {
-            h1 { font-size: 3.8rem; }
-            h2 { font-size: 2.8rem; }
-            .hero-title { font-size: 4.5rem; }
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 2.75rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
         }
         
         @media (max-width: 768px) {
-            .container { padding: 0 25px; }
-            h1 { font-size: 3rem; }
-            h2 { font-size: 2.4rem; }
-            .hero-title { font-size: 3.5rem; }
-            section { padding: 80px 0; }
+            .mobile-toggle {
+                display: block;
+            }
             
             .nav-links {
                 display: none;
@@ -626,438 +465,587 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: white;
-                flex-direction: column;
+                background: var(--color-surface);
                 padding: 20px;
-                box-shadow: var(--shadow);
+                flex-direction: column;
+                gap: 16px;
+                border-bottom: 1px solid var(--color-border);
             }
             
             .nav-links.active {
                 display: flex;
             }
             
-            .mobile-toggle {
-                display: block;
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .hero {
+                min-height: 80vh;
             }
             
             .btn-group {
                 flex-direction: column;
-                align-items: center;
             }
             
             .btn {
                 width: 100%;
                 max-width: 300px;
-                justify-content: center;
             }
         }
         
-        @media (max-width: 576px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 2rem; }
-            .hero-title { font-size: 2.8rem; }
-            .lead { font-size: 1.1rem; }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+        }
+        
+        /* ===== УТИЛИТЫ ===== */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-3 { margin-top: 3rem; }
+        .mt-4 { margin-top: 4rem; }
+        
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        .mb-4 { margin-bottom: 4rem; }
+        
+        .opacity-75 { opacity: 0.75; }
+        .opacity-50 { opacity: 0.5; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
 <body>
     <!-- НАВИГАЦИЯ -->
-    <nav id="navbar">
+    <nav class="navbar">
         <div class="container nav-container">
-            <a href="#" class="logo">СЕРБИ<span>Я</span></a>
+            <a href="#" class="logo">
+                <span class="logo-dot"></span>
+                Сербия
+            </a>
             
             <button class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
+                ☰
             </button>
             
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Главная</a></li>
-                <li><a href="#nature">Природа</a></li>
-                <li><a href="#culture">Культура</a></li>
-                <li><a href="#cuisine">Кухня</a></li>
-                <li><a href="#gallery">Галерея</a></li>
-                <li><a href="#contact">Контакты</a></li>
+                <li><a href="#home" class="nav-link">Главная</a></li>
+                <li><a href="#nature" class="nav-link">Природа</a></li>
+                <li><a href="#culture" class="nav-link">Культура</a></li>
+                <li><a href="#cuisine" class="nav-link">Кухня</a></li>
+                <li><a href="#gallery" class="nav-link">Галерея</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- ГЕРОЙ СЕКЦИЯ -->
     <section class="hero" id="home">
-        <div class="hero-background">
-            <img src="setbia-main.jpg" alt="Сербия - главное изображение" onerror="this.src='https://images.unsplash.com/photo-1578474845476-8af6d0aa3e79?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
-        </div>
-        
-        <div class="hero-content container fade-in">
-            <h1 class="hero-title">ДУША БАЛКАН</h1>
-            <p class="hero-subtitle">Страна с горячим сердцем, где древние монастыри соседствуют с современной энергией Белграда, а гостеприимство стало национальной чертой характера.</p>
-            <div class="btn-group">
-                <a href="#nature" class="btn btn-primary">
-                    <i class="fas fa-mountain"></i> Исследовать природу
-                </a>
-                <a href="#cuisine" class="btn btn-secondary">
-                    <i class="fas fa-utensils"></i> Открыть кухню
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- СЕКЦИЯ ПРИРОДА -->
-    <section class="nature-section" id="nature">
         <div class="container">
-            <h2>Природные сокровища</h2>
-            <p class="lead">От величественных гор до живописных ущелий — Сербия предлагает нетронутую природу, которая захватывает дух.</p>
-            
-            <div class="grid grid-2">
-                <div class="nature-card fade-in">
-                    <img src="tara-national-park.jpg" alt="Национальный парк Тара" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
-                    <div class="nature-content">
-                        <h3>Национальный парк Тара</h3>
-                        <p>Девственные леса, глубокие каньоны и чистейший воздух. Дом для редких видов растений и животных.</p>
-                    </div>
-                </div>
-                
-                <div class="nature-card fade-in">
-                    <img src="djerdap-national-park.jpg" alt="Джердапское ущелье" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
-                    <div class="nature-content">
-                        <h3>Джердапское ущелье</h3>
-                        <p>Величественное ущелье на Дунае длиной 100 км — самое большое в Европе. Скалы, крепости и древняя история.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-3" style="margin-top: 40px;">
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="devils-town.jpg" alt="Дьявольский город" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-mountain"></i></div>
-                        <h3>Дьявольский город</h3>
-                        <p>202 каменных столба естественного происхождения, созданных эрозией. Уникальный геологический памятник.</p>
-                    </div>
-                </div>
-                
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="tara-mountain.jpg" alt="Гора Тара" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-tree"></i></div>
-                        <h3>Гора Тара</h3>
-                        <p>Один из самых сохранившихся лесных массивов в Европе. Идеальное место для пеших походов и отдыха на природе.</p>
-                    </div>
-                </div>
-                
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="house-on-drina.jpg" alt="Дом на Дрине" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-water"></i></div>
-                        <h3>Дом на Дрине</h3>
-                        <p>Легендарный домик на скале посреди реки Дрина — символ человеческого упорства и гармонии с природой.</p>
-                    </div>
+            <div class="hero-content">
+                <h1>Сербия</h1>
+                <p class="hero-subtitle">Современная страна с древней душой. Место, где история встречает будущее, а традиции соседствуют с инновациями.</p>
+                <div class="btn-group">
+                    <a href="#nature" class="btn btn-primary">Исследовать</a>
+                    <a href="#gallery" class="btn btn-secondary">Смотреть фото</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- СЕКЦИЯ КУЛЬТУРЫ -->
-    <section id="culture">
+    <!-- О СЕРБИИ -->
+    <section class="section">
+        <div class="container container-narrow text-center">
+            <h2>Страна контрастов</h2>
+            <p class="lead">От шумных улиц Белграда до тихих монастырей в горах. От современных фестивалей до вековых традиций. Сербия — это баланс между прошлым и будущим.</p>
+        </div>
+    </section>
+
+    <!-- ПРИРОДА -->
+    <section class="section" id="nature" style="background: var(--color-surface);">
         <div class="container">
-            <h2>Культурное наследие</h2>
-            <p class="lead">Сербия — перекресток цивилизаций, где смешались византийские, османские и австро-венгерские влияния.</p>
+            <h2 class="text-center mb-4">Природные богатства</h2>
+            
+            <div class="grid grid-2 mt-3">
+                <div class="nature-card">
+                    <div class="image-placeholder" style="height: 100%;"></div>
+                    <div class="nature-overlay">
+                        <h3>Горы и реки</h3>
+                        <p>Национальные парки и заповедные зоны</p>
+                    </div>
+                </div>
+                
+                <div class="nature-card">
+                    <div class="image-placeholder" style="height: 100%;"></div>
+                    <div class="nature-overlay">
+                        <h3>Уникальные ландшафты</h3>
+                        <p>От Дьявольского города до ущелий Дуная</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-3 mt-3">
+                <div class="card">
+                    <div class="card-icon">🏔️</div>
+                    <h3 class="card-title">Горные массивы</h3>
+                    <p>Тара, Копаоник, Златибор — идеальные места для пеших походов и горнолыжного спорта.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🌊</div>
+                    <h3 class="card-title">Водные ресурсы</h3>
+                    <p>Дунай, Дрина, Сава — реки, которые формируют ландшафт и историю страны.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🌳</div>
+                    <h3 class="card-title">Национальные парки</h3>
+                    <p>Заповедные зоны с уникальной флорой и фауной, охраняемые государством.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КУЛЬТУРА -->
+    <section class="section" id="culture">
+        <div class="container">
+            <h2 class="text-center mb-4">Культурное наследие</h2>
             
             <div class="grid grid-3">
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="studentca-monastery.jpg" alt="Монастырь Студеница" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-place-of-worship"></i></div>
-                        <h3>Монастырь Студеница</h3>
-                        <p>Объект ЮНЕСКО, основанный в XII веке. Шедевр сербско-византийской архитектуры с уникальными фресками.</p>
-                    </div>
+                <div class="card">
+                    <div class="card-icon">⛪</div>
+                    <h3 class="card-title">Монастыри</h3>
+                    <p>Средневековые монастыри с уникальными фресками, включённые в список ЮНЕСКО.</p>
                 </div>
                 
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="manastir-zica.jpg" alt="Монастырь Жича" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-church"></i></div>
-                        <h3>Монастырь Жича</h3>
-                        <p>Короновальная церковь сербских королей. Известен своими красными стенами и богатой историей.</p>
-                    </div>
+                <div class="card">
+                    <div class="card-icon">🎭</div>
+                    <h3 class="card-title">Фестивали</h3>
+                    <p>EXIT, Гуча, Belgrade Beer Fest — события, которые собирают людей со всего мира.</p>
                 </div>
                 
-                <div class="card fade-in">
-                    <div class="card-image">
-                        <img src="belgrade-fortress.jpg" alt="Белградская крепость" onerror="this.src='https://images.unsplash.com/photo-1578474845476-8af6d0aa3e79?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
-                    </div>
-                    <div class="card-content">
-                        <div class="card-icon"><i class="fas fa-fort-awesome"></i></div>
-                        <h3>Белградская крепость</h3>
-                        <p>Символ Белграда, свидетель 2000-летней истории. От римского каструма до современного парка Калемегдан.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="grid grid-2" style="margin-top: 60px;">
-                <div class="fade-in">
-                    <h3>Музыка и фестивали</h3>
-                    <p>Сербия известна своей живой музыкальной сценой. Легендарный фестиваль EXIT в Нови-Саде ежегодно собирает десятки тысяч человек со всего мира. Традиционная народная музыка, турбо-фолк и современные направления создают уникальный звуковой ландшафт.</p>
-                    <img src="culture-festival.jpg" alt="Фестиваль EXIT" style="width:100%; border-radius: var(--border-radius); margin-top:20px;" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
-                </div>
-                
-                <div class="fade-in">
-                    <h3>Гостеприимство — национальная черта</h3>
-                    <p>"Гость в дом — Бог в дом" — эта пословица как нельзя лучше описывает сербское отношение к гостям. Радушие, щедрость и искренняя забота о каждом, кто переступает порог сербского дома.</p>
-                    <img src="culture-hospitality.jpg" alt="Сербское гостеприимство" style="width:100%; border-radius: var(--border-radius); margin-top:20px;" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                <div class="card">
+                    <div class="card-icon">🏛️</div>
+                    <h3 class="card-title">Архитектура</h3>
+                    <p>Смесь византийского, османского и современного стилей в городской застройке.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- СЕКЦИЯ КУХНИ -->
-    <section class="cuisine-section" id="cuisine">
+    <!-- КУХНЯ -->
+    <section class="section" id="cuisine" style="background: var(--color-surface);">
         <div class="container">
-            <h2>Легендарная кухня</h2>
-            <p class="lead">Сытная, душевная и невероятно вкусная. Сербская кухня — это праздник для желудка и души.</p>
+            <h2 class="text-center mb-4">Гастрономия</h2>
+            <p class="text-center lead mb-4">Сытная, вкусная и душевная. Сербская кухня — это праздник для всех чувств.</p>
             
-            <div class="grid grid-3">
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="cevapi.jpg" alt="Чевапчичи" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
+            <div class="grid grid-4">
+                <div class="food-card">
+                    <div class="food-image image-placeholder"></div>
                     <h3>Чевапчичи</h3>
-                    <p>Небольшие колбаски из мясного фарша, приготовленные на гриле. Подаются с луком, лепёшкой "сомун" и каймаком.</p>
+                    <p class="opacity-75">Мясные колбаски на гриле</p>
                 </div>
                 
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="pijeskavica.jpg" alt="Плескавица" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
+                <div class="food-card">
+                    <div class="food-image image-placeholder"></div>
                     <h3>Плескавица</h3>
-                    <p>Большая рубленая котлета из смеси говядины и свинины. Часто подаётся в лепёшке с овощами и соусами.</p>
+                    <p class="opacity-75">Большая рубленая котлета</p>
                 </div>
                 
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="gibanica.jpg" alt="Гибаница" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
+                <div class="food-card">
+                    <div class="food-image image-placeholder"></div>
                     <h3>Гибаница</h3>
-                    <p>Слоёный пирог с сыром, самый популярный сербский "бурек". Идеальный завтрак или перекус в любое время дня.</p>
+                    <p class="opacity-75">Слоёный пирог с сыром</p>
                 </div>
                 
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="copska-salad.jpg" alt="Шопский салат" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
-                    <h3>Шопский салат</h3>
-                    <p>Свежие овощи (помидоры, огурцы, перец, лук) с тёртой брынзой сверху. Обязательное дополнение к любому мясу.</p>
-                </div>
-                
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="rakija.jpg" alt="Ракия" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
+                <div class="food-card">
+                    <div class="food-image image-placeholder"></div>
                     <h3>Ракия</h3>
-                    <p>Крепкий фруктовый бренди (сливовица, виноградная, грушевая). Национальный напиток, символ гостеприимства.</p>
+                    <p class="opacity-75">Традиционный фруктовый бренди</p>
                 </div>
-                
-                <div class="food-card fade-in">
-                    <div class="food-image">
-                        <img src="palacinke.jpg" alt="Палачинке" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'">
-                    </div>
-                    <h3>Палачинке</h3>
-                    <p>Тонкие блинчики с различными начинками: от орехов с мёдом до шоколада и фруктов. Любимый десерт.</p>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 60px;">
-                <a href="#gallery" class="btn btn-primary">
-                    <i class="fas fa-images"></i> Увидеть больше
-                </a>
             </div>
         </div>
     </section>
 
     <!-- ГАЛЕРЕЯ -->
-    <section id="gallery">
+    <section class="section" id="gallery">
         <div class="container">
-            <h2>Моменты Сербии</h2>
-            <p class="lead">Лучшие кадры, которые передают дух и красоту этой удивительной страны.</p>
+            <h2 class="text-center mb-4">Визуальная история</h2>
+            <p class="text-center lead mb-4">Моменты, которые рассказывают больше, чем слова.</p>
             
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="manastir-raca.jpg" alt="Монастырь Рача" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Монастырь Рача</div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="culture-music.jpg" alt="Традиционная музыка" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Традиционная музыка</div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="culture-dance.jpg" alt="Народные танцы" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Народные танцы</div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="carma.jpg" alt="Чарма" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Традиционное блюдо Чарма</div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="giyar.jpg" alt="Гияр" onerror="this.src='https://images.unsplash.com/photo-1546874177-9e664107314e?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Сербские соленья</div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="culture-cuisine.jpg" alt="Сербский стол" onerror="this.src='https://images.unsplash.com/photo-1591131070565-5b6c6b5b5b0f?ixlib=rb-4.0.3&auto=format&fit=crop&w-400&q=80'">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">Богатый сербский стол</div>
-                    </div>
+            <div class="gallery">
+                <div class="gallery-grid">
+                    <!-- Галерея будет заполнена JavaScript -->
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
+                    <div class="gallery-item"><div class="image-placeholder" style="height: 100%;"></div></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ПОДВАЛ -->
-    <footer id="contact">
+    <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <div class="footer-logo">СЕРБИ<span>Я</span></div>
-                    <p class="footer-description">Страна с горячим сердцем, богатой историей и невероятной природой. Гостеприимство, ставшее легендой.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
-                    </div>
+                    <a href="#" class="logo mb-2">
+                        <span class="logo-dot"></span>
+                        Сербия
+                    </a>
+                    <p class="opacity-75">Современный гид по стране с богатой историей и культурой.</p>
                 </div>
                 
                 <div>
-                    <h4 class="footer-heading">Быстрые ссылки</h4>
+                    <h4 class="footer-heading">Навигация</h4>
                     <ul class="footer-links">
                         <li><a href="#home">Главная</a></li>
                         <li><a href="#nature">Природа</a></li>
                         <li><a href="#culture">Культура</a></li>
                         <li><a href="#cuisine">Кухня</a></li>
-                        <li><a href="#gallery">Галерея</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="footer-heading">Контакты</h4>
+                    <h4 class="footer-heading">Ресурсы</h4>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> Белград, Сербия</li>
-                        <li><i class="fas fa-phone"></i> +381 11 123 4567</li>
-                        <li><i class="fas fa-envelope"></i> info@srbija.rs</li>
-                        <li><i class="fas fa-globe"></i> www.visitserbia.org</li>
+                        <li><a href="#">Официальный туризм</a></li>
+                        <li><a href="#">Карты и маршруты</a></li>
+                        <li><a href="#">События</a></li>
+                        <li><a href="#">Контакты</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2025 СЕРБИЯ. Все права защищены. Этот сайт создан с любовью к балканской культуре.</p>
-                <p style="margin-top: 10px; font-size: 0.8rem;">Фотографии из личной коллекции и открытых источников.</p>
+                <p>© 2024 Сербия. Все права защищены.</p>
+                <p class="mt-1 opacity-50">Сайт создан для ознакомления с культурой и природой страны.</p>
             </div>
         </div>
     </footer>
 
     <!-- СКРИПТЫ -->
     <script>
-        // Мобильное меню
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileToggle.innerHTML = navLinks.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
-        
-        // Закрытие меню при клике на ссылку
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-        
-        // Плавная прокрутка для всех ссылок с якорями
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Эффект появления элементов при прокрутке
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-        
-        // Наблюдаем за всеми карточками и галереей
-        document.querySelectorAll('.card, .nature-card, .food-card, .gallery-item, .grid > div').forEach(el => {
-            observer.observe(el);
-        });
-        
-        // Эффект навигации при прокрутке
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if(window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-        
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', () => {
-            // Добавляем класс для анимации элементов, которые уже в viewport
+        // ===== ОСНОВНОЙ СКРИПТ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Сайт загружен');
+            
+            // Инициализация
+            initNavigation();
+            initLazyLoading();
+            initAnimations();
+            initGallery();
+            
+            // Показываем контент
             setTimeout(() => {
-                document.querySelectorAll('.fade-in').forEach(el => {
-                    if(el.getBoundingClientRect().top < window.innerHeight) {
-                        el.style.animationPlayState = 'running';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // ===== НАВИГАЦИЯ =====
+        function initNavigation() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    mobileToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+                });
+                
+                // Закрытие при клике на ссылку
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        mobileToggle.textContent = '☰';
+                    });
+                });
+            }
+            
+            // Плавная прокрутка
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
                     }
                 });
-            }, 300);
+            });
+        }
+
+        // ===== ЛЕНИВАЯ ЗАГРУЗКА =====
+        function initLazyLoading() {
+            // Создаём Intersection Observer для изображений
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        loadImage(img);
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px',
+                threshold: 0.1
+            });
+            
+            // Наблюдаем за всеми изображениями
+            document.querySelectorAll('img').forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    observer.observe(img);
+                }
+            });
+            
+            // Функция загрузки изображения
+            function loadImage(img) {
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                }
+            }
+        }
+
+        // ===== ГАЛЕРЕЯ =====
+        function initGallery() {
+            // Список изображений для галереи (можно расширить)
+            const galleryImages = [
+                'belgrade-fortress.jpg',
+                'studentca-monastery.jpg',
+                'tara-national-park.jpg',
+                'djerdap-national-park.jpg',
+                'cevapi.jpg',
+                'gibanica.jpg',
+                'culture-festival.jpg',
+                'house-on-drina.jpg'
+            ];
+            
+            // Заполняем галерею
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach((item, index) => {
+                if (galleryImages[index]) {
+                    // Создаём изображение
+                    const img = document.createElement('img');
+                    img.dataset.src = galleryImages[index];
+                    img.alt = 'Сербия фото ' + (index + 1);
+                    img.classList.add('image-placeholder');
+                    
+                    // Очищаем placeholder и добавляем изображение
+                    item.innerHTML = '';
+                    item.appendChild(img);
+                    
+                    // Загружаем с задержкой для производительности
+                    setTimeout(() => {
+                        img.src = img.dataset.src;
+                    }, index * 200);
+                }
+            });
+            
+            // Загружаем другие изображения на странице
+            loadOtherImages();
+        }
+
+        function loadOtherImages() {
+            // Природа карты
+            const natureCards = document.querySelectorAll('.nature-card .image-placeholder');
+            const natureImages = [
+                'tara-mountain.jpg',
+                'devils-town.jpg'
+            ];
+            
+            natureCards.forEach((card, index) => {
+                if (natureImages[index]) {
+                    const img = new Image();
+                    img.src = natureImages[index];
+                    img.onload = () => {
+                        card.style.backgroundImage = `url('${natureImages[index]}')`;
+                        card.style.backgroundSize = 'cover';
+                        card.style.backgroundPosition = 'center';
+                        card.classList.remove('image-placeholder');
+                    };
+                }
+            });
+            
+            // Еда
+            const foodImages = [
+                'cevapi.jpg',
+                'pijeskavica.jpg',
+                'gibanica.jpg',
+                'rakija.jpg'
+            ];
+            
+            document.querySelectorAll('.food-image').forEach((img, index) => {
+                if (foodImages[index]) {
+                    const image = new Image();
+                    image.src = foodImages[index];
+                    image.onload = () => {
+                        img.style.backgroundImage = `url('${foodImages[index]}')`;
+                        img.style.backgroundSize = 'cover';
+                        img.style.backgroundPosition = 'center';
+                        img.classList.remove('image-placeholder');
+                    };
+                }
+            });
+        }
+
+        // ===== АНИМАЦИИ =====
+        function initAnimations() {
+            // Анимация появления элементов при скролле
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за карточками
+            document.querySelectorAll('.card, .nature-card, .food-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+            
+            // Анимация заголовка
+            const title = document.querySelector('h1');
+            if (title) {
+                title.style.opacity = '0';
+                title.style.transform = 'translateY(20px)';
+                title.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                
+                setTimeout(() => {
+                    title.style.opacity = '1';
+                    title.style.transform = 'translateY(0)';
+                }, 300);
+            }
+            
+            // Эффект параллакса для героя
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('.hero-content');
+                
+                if (hero && scrolled < window.innerHeight) {
+                    const parallax = scrolled * 0.3;
+                    hero.style.transform = `translateY(${parallax}px)`;
+                }
+                
+                // Эффект навигации
+                const navbar = document.querySelector('.navbar');
+                if (scrolled > 100) {
+                    navbar.style.boxShadow = 'var(--shadow-md)';
+                } else {
+                    navbar.style.boxShadow = 'none';
+                }
+            });
+        }
+
+        // ===== ПРОСТЫЕ ЭФФЕКТЫ =====
+        // Эффект при наведении на карточки
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.zIndex = '10';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    card.style.zIndex = '';
+                }, 300);
+            });
+        });
+
+        // Горячие клавиши
+        document.addEventListener('keydown', (e) => {
+            // Escape закрывает меню
+            if (e.key === 'Escape') {
+                const navLinks = document.getElementById('navLinks');
+                const mobileToggle = document.getElementById('mobileToggle');
+                if (navLinks && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    mobileToggle.textContent = '☰';
+                }
+            }
+            
+            // Space прокручивает вниз
+            if (e.key === ' ' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' });
+            }
+        });
+
+        // Индикатор загрузки
+        window.addEventListener('load', () => {
+            const loader = document.createElement('div');
+            loader.style.position = 'fixed';
+            loader.style.top = '0';
+            loader.style.left = '0';
+            loader.style.width = '100%';
+            loader.style.height = '3px';
+            loader.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-secondary))';
+            loader.style.zIndex = '9999';
+            loader.style.transform = 'scaleX(0)';
+            loader.style.transformOrigin = 'left';
+            loader.style.transition = 'transform 0.3s ease';
+            
+            document.body.appendChild(loader);
+            
+            // Анимация прогресса
+            setTimeout(() => loader.style.transform = 'scaleX(0.3)', 10);
+            setTimeout(() => loader.style.transform = 'scaleX(0.7)', 300);
+            setTimeout(() => loader.style.transform = 'scaleX(1)', 600);
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 300);
+            }, 900);
+            
+            console.log('Все ресурсы загружены');
         });
     </script>
 </body>
