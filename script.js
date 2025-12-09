@@ -1,1047 +1,1357 @@
-/* ===== JAVASCRIPT ДЛЯ САЙТА "СЕРБИЯ" ===== */
-/* Интерактивность, анимации и специальные эффекты */
+/* ===== MODERN JS FOR SERBIA SITE ===== */
+/* Glass effects, particles, parallax, animations */
 
-// ===== ОСНОВНОЙ МОДУЛЬ =====
-const SerbiaWebsite = (() => {
-  // Конфигурация
-  const config = {
-    animationSpeed: 0.3,
-    scrollOffset: 80,
+// ===== CONFIGURATION =====
+const CONFIG = {
+    // Performance
+    throttleDelay: 16, // ~60fps
     lazyLoadThreshold: 0.1,
-    parallaxIntensity: 0.3,
-    imageLoadDelay: 100
-  };
+    
+    // Effects
+    parallaxIntensity: 0.15,
+    mouseTrailLength: 20,
+    particleCount: 30,
+    
+    // Glass morphism
+    glassBlur: '10px',
+    glassOpacity: 0.15,
+    
+    // Animations
+    animationDuration: 800,
+    staggerDelay: 100
+};
 
-  // Состояние приложения
-  const state = {
+// ===== STATE =====
+const STATE = {
     isMobile: false,
-    isScrolled: false,
-    currentSection: 'home',
-    imagesLoaded: 0,
-    totalImages: 0,
-    lastScrollY: 0,
-    scrollDirection: 'down'
-  };
+    scrollY: 0,
+    mouseX: 0,
+    mouseY: 0,
+    mouseTrail: [],
+    isScrolling: false,
+    scrollTimeout: null,
+    loadedImages: new Set(),
+    totalImages: 0
+};
 
-  // DOM элементы
-  const elements = {
-    navbar: null,
-    mobileToggle: null,
-    navLinks: null,
-    heroBackground: null,
-    cards: [],
-    galleryItems: [],
-    natureCards: [],
-    foodCards: [],
-    lazyImages: [],
-    sections: []
-  };
-
-  // ===== ИНИЦИАЛИЗАЦИЯ =====
-  function init() {
-    console.log('%c🇷🇸 СЕРБИЯ | Сайт инициализирован', 'color: #c8102e; font-size: 14px; font-weight: bold;');
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('%c🇷🇸 SERBIA • Modern Experience', 
+        'background: linear-gradient(135deg, #8b5cf6, #10b981); color: white; padding: 10px; border-radius: 5px; font-size: 14px;');
     
-    cacheElements();
+    init();
+});
+
+async function init() {
+    detectDevice();
+    createLoadingScreen();
+    
+    // Initialize modules
+    await Promise.all([
+        initNavigation(),
+        initGlassEffects(),
+        initParallax(),
+        initParticles(),
+        initLazyLoad(),
+        initSmoothScrolling(),
+        initImageReveal(),
+        initMouseEffects(),
+        initScrollAnimations(),
+        initPageTransitions()
+    ]);
+    
+    // Start effects
+    startMouseTrail();
+    startParallax();
+    startParticleSystem();
+    
+    // Finalize
+    setTimeout(() => {
+        removeLoadingScreen();
+        initPageIntro();
+    }, 1000);
+    
+    // Event listeners
     setupEventListeners();
-    detectMobile();
-    setupIntersectionObservers();
-    setupParallax();
-    setupImageLoader();
-    setupScrollEffects();
-    setupCustomCursor();
-    setupSerbianEffects();
-    
-    // Анимация загрузки
-    setTimeout(() => {
-      document.body.classList.add('loaded');
-      startPageAnimations();
-    }, 500);
-  }
+}
 
-  // Кэширование элементов
-  function cacheElements() {
-    elements.navbar = document.getElementById('navbar');
-    elements.mobileToggle = document.getElementById('mobileToggle');
-    elements.navLinks = document.getElementById('navLinks');
-    elements.heroBackground = document.querySelector('.hero-background');
-    
-    elements.cards = document.querySelectorAll('.card');
-    elements.galleryItems = document.querySelectorAll('.gallery-item');
-    elements.natureCards = document.querySelectorAll('.nature-card');
-    elements.foodCards = document.querySelectorAll('.food-card');
-    elements.lazyImages = document.querySelectorAll('img[data-src]');
-    elements.sections = document.querySelectorAll('section[id]');
-    
-    // Счётчик изображений
-    state.totalImages = document.querySelectorAll('img').length;
-  }
-
-  // ===== СОБЫТИЯ =====
-  function setupEventListeners() {
-    // Мобильное меню
-    if (elements.mobileToggle) {
-      elements.mobileToggle.addEventListener('click', toggleMobileMenu);
-    }
-
-    // Закрытие меню при клике на ссылку
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
-    });
-
-    // Закрытие меню при клике вне его
-    document.addEventListener('click', (e) => {
-      if (!elements.navLinks.contains(e.target) && !elements.mobileToggle.contains(e.target)) {
-        closeMobileMenu();
-      }
-    });
-
-    // Плавная прокрутка для якорных ссылок
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', smoothScroll);
-    });
-
-    // События скролла
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleResize);
-
-    // Загрузка изображений
-    window.addEventListener('load', handlePageLoad);
-  }
-
-  // ===== МОБИЛЬНОЕ МЕНЮ =====
-  function toggleMobileMenu() {
-    elements.navLinks.classList.toggle('active');
-    const icon = elements.mobileToggle.querySelector('i');
-    
-    if (elements.navLinks.classList.contains('active')) {
-      icon.classList.remove('fa-bars');
-      icon.classList.add('fa-times');
-      document.body.style.overflow = 'hidden';
-    } else {
-      icon.classList.remove('fa-times');
-      icon.classList.add('fa-bars');
-      document.body.style.overflow = '';
-    }
-  }
-
-  function closeMobileMenu() {
-    elements.navLinks.classList.remove('active');
-    const icon = elements.mobileToggle.querySelector('i');
-    icon.classList.remove('fa-times');
-    icon.classList.add('fa-bars');
-    document.body.style.overflow = '';
-  }
-
-  // ===== ПЛАВНАЯ ПРОКРУТКА =====
-  function smoothScroll(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('href');
-    
-    if (targetId === '#') return;
-    
-    const targetElement = document.querySelector(targetId);
-    if (!targetElement) return;
-    
-    // Обновляем активную ссылку
-    updateActiveNavLink(targetId);
-    
-    // Прокрутка
-    const targetPosition = targetElement.offsetTop - config.scrollOffset;
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    const duration = 800;
-    let startTime = null;
-    
-    function animation(currentTime) {
-      if (startTime === null) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
-      window.scrollTo(0, run);
-      
-      if (timeElapsed < duration) {
-        requestAnimationFrame(animation);
-      }
-    }
-    
-    // Функция плавности
-    function easeInOutQuad(t, b, c, d) {
-      t /= d / 2;
-      if (t < 1) return c / 2 * t * t + b;
-      t--;
-      return -c / 2 * (t * (t - 2) - 1) + b;
-    }
-    
-    requestAnimationFrame(animation);
-    closeMobileMenu();
-  }
-
-  // Обновление активной ссылки в навигации
-  function updateActiveNavLink(targetId) {
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === targetId) {
-        link.classList.add('active');
-      }
-    });
-    
-    state.currentSection = targetId.substring(1);
-  }
-
-  // ===== ОБРАБОТКА СКРОЛЛА =====
-  function handleScroll() {
-    const currentScrollY = window.pageYOffset;
-    
-    // Определяем направление скролла
-    state.scrollDirection = currentScrollY > state.lastScrollY ? 'down' : 'up';
-    state.lastScrollY = currentScrollY;
-    
-    // Эффект навигации при скролле
-    if (currentScrollY > 100) {
-      if (!state.isScrolled) {
-        state.isScrolled = true;
-        elements.navbar.classList.add('scrolled');
-      }
-    } else {
-      if (state.isScrolled) {
-        state.isScrolled = false;
-        elements.navbar.classList.remove('scrolled');
-      }
-    }
-    
-    // Обновление активного раздела
-    updateActiveSectionOnScroll();
-    
-    // Параллакс эффекты
-    updateParallax();
-    
-    // Эффекты при скролле
-    applyScrollEffects(currentScrollY);
-  }
-
-  // Обновление активного раздела при скролле
-  function updateActiveSectionOnScroll() {
-    let currentSection = 'home';
-    
-    elements.sections.forEach(section => {
-      const sectionTop = section.offsetTop - 100;
-      const sectionHeight = section.clientHeight;
-      const sectionId = section.getAttribute('id');
-      
-      if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-        currentSection = sectionId;
-      }
-    });
-    
-    if (state.currentSection !== currentSection) {
-      state.currentSection = currentSection;
-      updateActiveNavLink(`#${currentSection}`);
-    }
-  }
-
-  // ===== АНИМАЦИИ ПРИ СКРОЛЛЕ =====
-  function applyScrollEffects(scrollY) {
-    // Эффект появления элементов
-    const fadeElements = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right');
-    
-    fadeElements.forEach(element => {
-      const elementTop = element.getBoundingClientRect().top;
-      const elementVisible = 150;
-      
-      if (elementTop < window.innerHeight - elementVisible) {
-        element.style.opacity = '1';
-        element.style.transform = 'translate(0, 0)';
-      }
-    });
-    
-    // Параллакс для героя
-    if (elements.heroBackground && scrollY < window.innerHeight) {
-      const scrolled = scrollY * config.parallaxIntensity;
-      elements.heroBackground.style.transform = `translateY(${scrolled}px)`;
-    }
-    
-    // Анимация карточек при скролле
-    animateCardsOnScroll();
-  }
-
-  // Анимация карточек
-  function animateCardsOnScroll() {
-    elements.cards.forEach((card, index) => {
-      const cardTop = card.getBoundingClientRect().top;
-      const cardVisible = 200;
-      
-      if (cardTop < window.innerHeight - cardVisible) {
-        setTimeout(() => {
-          card.style.opacity = '1';
-          card.style.transform = 'translateY(0)';
-        }, index * 100);
-      }
-    });
-  }
-
-  // ===== ИНТЕРСЕКШН ОБСЕРВЕРЫ =====
-  function setupIntersectionObservers() {
-    // Для ленивой загрузки изображений
-    const lazyImageObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.classList.add('loaded');
-          lazyImageObserver.unobserve(img);
-          state.imagesLoaded++;
-          updateProgress();
-        }
-      });
-    }, { threshold: config.lazyLoadThreshold });
-    
-    // Для анимации элементов
-    const animationObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animated');
-          
-          // Специальные эффекты для разных типов элементов
-          if (entry.target.classList.contains('card')) {
-            animateCard(entry.target);
-          } else if (entry.target.classList.contains('gallery-item')) {
-            animateGalleryItem(entry.target);
-          }
-        }
-      });
-    }, { threshold: 0.2 });
-    
-    // Наблюдаем за элементами
-    document.querySelectorAll('.card, .gallery-item, .nature-card, .food-card').forEach(el => {
-      animationObserver.observe(el);
-    });
-  }
-
-  // ===== ПАРАЛЛАКС ЭФФЕКТЫ =====
-  function setupParallax() {
-    // Инициализация параллакса для фоновых элементов
-    document.querySelectorAll('.parallax').forEach(element => {
-      element.style.transform = 'translateZ(0)';
-    });
-  }
-
-  function updateParallax() {
-    const scrolled = window.pageYOffset;
-    
-    document.querySelectorAll('.parallax').forEach(element => {
-      const speed = element.dataset.speed || config.parallaxIntensity;
-      const yPos = -(scrolled * speed);
-      element.style.transform = `translate3d(0, ${yPos}px, 0)`;
-    });
-  }
-
-  // ===== ЗАГРУЗКА ИЗОБРАЖЕНИЙ =====
-  function setupImageLoader() {
-    if (elements.lazyImages.length > 0) {
-      elements.lazyImages.forEach(img => {
-        img.classList.add('lazy-load');
-        state.totalImages++;
-      });
-    }
-    
-    // Предзагрузка критических изображений
-    preloadCriticalImages();
-  }
-
-  function preloadCriticalImages() {
-    const criticalImages = [
-      'setbia-main.jpg',
-      'belgrade-fortress.jpg',
-      'tara-national-park.jpg'
-    ];
-    
-    criticalImages.forEach(src => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => {
-        state.imagesLoaded++;
-        updateProgress();
-      };
-    });
-  }
-
-  function updateProgress() {
-    const progress = (state.imagesLoaded / state.totalImages) * 100;
-    
-    // Можно добавить индикатор загрузки
-    if (progress === 100) {
-      console.log('%c✅ Все изображения загружены', 'color: #4CAF50; font-weight: bold;');
-    }
-  }
-
-  // ===== АНИМАЦИИ ЭЛЕМЕНТОВ =====
-  function animateCard(card) {
-    card.style.transition = `all ${config.animationSpeed}s cubic-bezier(0.175, 0.885, 0.32, 1.1)`;
-    
-    // Случайная небольшая задержка для естественного вида
-    const delay = Math.random() * 0.3;
-    
-    setTimeout(() => {
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0) scale(1)';
-      
-      // Анимация иконки
-      const icon = card.querySelector('.card-icon');
-      if (icon) {
-        icon.style.transform = 'scale(1.1) rotate(5deg)';
-        setTimeout(() => {
-          icon.style.transform = 'scale(1) rotate(0)';
-        }, 300);
-      }
-    }, delay * 1000);
-  }
-
-  function animateGalleryItem(item) {
-    const img = item.querySelector('img');
-    const overlay = item.querySelector('.gallery-overlay');
-    
-    if (img) {
-      img.style.transition = `transform ${config.animationSpeed * 2}s ease`;
-    }
-    
-    if (overlay) {
-      overlay.style.transition = `opacity ${config.animationSpeed}s ease`;
-      setTimeout(() => {
-        overlay.style.opacity = '0.8';
-      }, 200);
-    }
-  }
-
-  // ===== СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ДЛЯ СЕРБСКОЙ ТЕМЫ =====
-  function setupSerbianEffects() {
-    // Эффект традиционного орнамента при наведении
-    setupOrnamentEffects();
-    
-    // Анимация флага Сербии
-    setupFlagAnimation();
-    
-    // Интерактивная карта Сербии (упрощённая)
-    setupInteractiveMap();
-    
-    // Галерея с эффектом монастырской фрески
-    setupFrescoGallery();
-  }
-
-  function setupOrnamentEffects() {
-    // Добавляем эффект орнамента при наведении на заголовки
-    document.querySelectorAll('h1, h2, h3').forEach(heading => {
-      heading.addEventListener('mouseenter', function() {
-        this.style.backgroundImage = 
-          `linear-gradient(135deg, 
-            var(--serbian-blue) 0%, 
-            var(--serbian-red) 50%, 
-            var(--serbian-gold) 100%)`;
-        this.style.webkitBackgroundClip = 'text';
-        this.style.backgroundClip = 'text';
-        this.style.webkitTextFillColor = 'transparent';
-      });
-      
-      heading.addEventListener('mouseleave', function() {
-        setTimeout(() => {
-          if (this.tagName === 'H1') {
-            this.style.backgroundImage = 
-              `linear-gradient(135deg, 
-                var(--serbian-blue) 0%, 
-                var(--serbian-red) 100%)`;
-          } else {
-            this.style.backgroundImage = '';
-            this.style.webkitTextFillColor = '';
-            this.style.color = '';
-          }
-        }, 300);
-      });
-    });
-  }
-
-  function setupFlagAnimation() {
-    // Анимация цветов флага в шапке
-    const logo = document.querySelector('.logo');
-    if (logo) {
-      let colorIndex = 0;
-      const flagColors = ['#0c2e60', '#c8102e', '#f8c300', '#ffffff'];
-      
-      logo.addEventListener('click', function(e) {
-        e.preventDefault();
-        colorIndex = (colorIndex + 1) % flagColors.length;
-        
-        // Плавное изменение цвета
-        this.style.transition = 'color 0.5s ease';
-        this.style.color = flagColors[colorIndex];
-        
-        // Возврат к исходному цвету
-        setTimeout(() => {
-          this.style.color = '';
-        }, 1000);
-        
-        // Прокрутка наверх
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      });
-    }
-  }
-
-  function setupInteractiveMap() {
-    // Упрощённая интерактивная карта регионов Сербии
-    const mapContainer = document.querySelector('.map-container');
-    if (!mapContainer) return;
-    
-    const regions = [
-      { name: 'Белград', color: '#c8102e', description: 'Столица Сербии' },
-      { name: 'Воеводина', color: '#0c2e60', description: 'Автономный край' },
-      { name: 'Шумадия', color: '#f8c300', description: 'Исторический регион' },
-      { name: 'Рашка', color: '#8b4513', description: 'Земля монастырей' }
-    ];
-    
-    regions.forEach(region => {
-      const regionElement = document.createElement('div');
-      regionElement.className = 'map-region';
-      regionElement.innerHTML = `
-        <div class="region-dot" style="background-color: ${region.color}"></div>
-        <div class="region-info">
-          <h4>${region.name}</h4>
-          <p>${region.description}</p>
+// ===== LOADING SCREEN =====
+function createLoadingScreen() {
+    const loader = document.createElement('div');
+    loader.id = 'serbia-loader';
+    loader.innerHTML = `
+        <div class="loader-glass">
+            <div class="loader-logo">
+                <div class="loader-dot"></div>
+                <div class="loader-text">СЕРБИЯ</div>
+            </div>
+            <div class="loader-progress">
+                <div class="loader-bar"></div>
+            </div>
+            <div class="loader-hint">Загружаем магию Балкан...</div>
         </div>
-      `;
-      
-      regionElement.addEventListener('click', () => {
-        showRegionInfo(region);
-      });
-      
-      mapContainer.appendChild(regionElement);
-    });
-  }
-
-  function showRegionInfo(region) {
-    // Показываем информацию о регионе
-    const infoBox = document.createElement('div');
-    infoBox.className = 'region-info-box';
-    infoBox.innerHTML = `
-      <h3>${region.name}</h3>
-      <p>${region.description}</p>
-      <button class="btn btn-primary close-info">Закрыть</button>
     `;
     
-    infoBox.style.position = 'fixed';
-    infoBox.style.top = '50%';
-    infoBox.style.left = '50%';
-    infoBox.style.transform = 'translate(-50%, -50%)';
-    infoBox.style.zIndex = '2000';
-    infoBox.style.padding = '2rem';
-    infoBox.style.background = 'white';
-    infoBox.style.borderRadius = 'var(--radius-medium)';
-    infoBox.style.boxShadow = 'var(--shadow-hard)';
+    document.body.appendChild(loader);
     
-    document.body.appendChild(infoBox);
-    
-    infoBox.querySelector('.close-info').addEventListener('click', () => {
-      document.body.removeChild(infoBox);
-    });
-  }
-
-  function setupFrescoGallery() {
-    // Эффект старинной фрески для галереи
-    elements.galleryItems.forEach(item => {
-      item.addEventListener('mouseenter', function() {
-        const img = this.querySelector('img');
-        if (img) {
-          img.style.filter = 'sepia(0.3) contrast(1.1) brightness(0.95)';
-          img.style.transition = 'filter 0.5s ease';
-        }
-      });
-      
-      item.addEventListener('mouseleave', function() {
-        const img = this.querySelector('img');
-        if (img) {
-          img.style.filter = '';
-        }
-      });
-    });
-  }
-
-  // ===== КАСТОМНЫЙ КУРСОР =====
-  function setupCustomCursor() {
-    // Только для десктопа
-    if (state.isMobile) return;
-    
-    const cursor = document.createElement('div');
-    cursor.className = 'custom-cursor';
-    document.body.appendChild(cursor);
-    
-    // Второй курсор для эффекта
-    const cursor2 = document.createElement('div');
-    cursor2.className = 'custom-cursor-2';
-    document.body.appendChild(cursor2);
-    
-    // Стили для курсоров
+    // Add styles
     const style = document.createElement('style');
     style.textContent = `
-      .custom-cursor {
-        position: fixed;
-        width: 8px;
-        height: 8px;
-        background-color: var(--serbian-red);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        transition: transform 0.1s ease;
-        mix-blend-mode: difference;
-      }
-      
-      .custom-cursor-2 {
-        position: fixed;
-        width: 40px;
-        height: 40px;
-        border: 2px solid var(--serbian-blue);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9998;
-        transition: all 0.2s ease;
-        mix-blend-mode: difference;
-      }
-      
-      .custom-cursor.hover {
-        transform: scale(1.5);
-        background-color: var(--serbian-gold);
-      }
-      
-      .custom-cursor-2.hover {
-        transform: scale(0.8);
-        border-color: var(--serbian-gold);
-      }
+        #serbia-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #151515 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(20px);
+        }
+        
+        .loader-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(${CONFIG.glassBlur});
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            min-width: 300px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loader-logo {
+            margin-bottom: 30px;
+        }
+        
+        .loader-dot {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #8b5cf6, #10b981);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        .loader-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8b5cf6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .loader-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8b5cf6, #10b981);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .loader-hint {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
     `;
     document.head.appendChild(style);
     
-    // Движение курсора
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      
-      cursor2.style.left = e.clientX + 'px';
-      cursor2.style.top = e.clientY + 'px';
-    });
-    
-    // Эффекты при наведении
-    const hoverElements = document.querySelectorAll('a, button, .card, .gallery-item');
-    hoverElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-        cursor2.classList.add('hover');
-      });
-      
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-        cursor2.classList.remove('hover');
-      });
-    });
-    
-    // Скрыть системный курсор
-    document.body.style.cursor = 'none';
-  }
-
-  // ===== АНИМАЦИИ ЗАГРУЗКИ СТРАНИЦЫ =====
-  function startPageAnimations() {
-    // Последовательная анимация элементов
-    const elementsToAnimate = [
-      ...document.querySelectorAll('.hero-content > *'),
-      ...document.querySelectorAll('.section-title'),
-      ...document.querySelectorAll('.lead')
-    ];
-    
-    elementsToAnimate.forEach((el, index) => {
-      setTimeout(() => {
-        el.classList.add('animated');
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, index * 100);
-    });
-    
-    // Запускаем анимацию волны для заголовка
-    animateTitleWave();
-  }
-
-  function animateTitleWave() {
-    const title = document.querySelector('.hero-title');
-    if (!title) return;
-    
-    const text = title.textContent;
-    title.innerHTML = '';
-    
-    text.split('').forEach((char, index) => {
-      const span = document.createElement('span');
-      span.textContent = char;
-      span.style.display = 'inline-block';
-      span.style.opacity = '0';
-      span.style.transform = 'translateY(20px)';
-      span.style.transition = `all 0.5s ease ${index * 0.05}s`;
-      
-      title.appendChild(span);
-      
-      setTimeout(() => {
-        span.style.opacity = '1';
-        span.style.transform = 'translateY(0)';
-      }, 500 + (index * 50));
-    });
-  }
-
-  // ===== ОБРАБОТКА РЕСАЙЗА =====
-  function handleResize() {
-    detectMobile();
-    
-    // Переинициализация некоторых эффектов при изменении размера
-    if (state.isMobile) {
-      document.body.style.cursor = '';
-      const customCursor = document.querySelector('.custom-cursor');
-      if (customCursor) customCursor.remove();
-    }
-  }
-
-  function detectMobile() {
-    state.isMobile = window.innerWidth <= 768;
-  }
-
-  // ===== ЗАГРУЗКА СТРАНИЦЫ =====
-  function handlePageLoad() {
-    console.log('%c🚀 Страница полностью загружена', 'color: #0c2e60; font-weight: bold;');
-    
-    // Анимация прогресса загрузки
-    const progressBar = document.createElement('div');
-    progressBar.className = 'loading-progress';
-    progressBar.style.position = 'fixed';
-    progressBar.style.top = '0';
-    progressBar.style.left = '0';
-    progressBar.style.width = '0%';
-    progressBar.style.height = '3px';
-    progressBar.style.background = 'linear-gradient(to right, var(--serbian-blue), var(--serbian-red))';
-    progressBar.style.zIndex = '9999';
-    progressBar.style.transition = 'width 0.3s ease';
-    
-    document.body.appendChild(progressBar);
-    
-    // Симуляция прогресса
+    // Simulate progress
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 10;
-      progressBar.style.width = `${progress}%`;
-      
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          progressBar.style.opacity = '0';
-          setTimeout(() => {
-            document.body.removeChild(progressBar);
-          }, 300);
-        }, 300);
-      }
-    }, 50);
-  }
-
-  // ===== ПУБЛИЧНЫЕ МЕТОДЫ =====
-  return {
-    init,
-    toggleMobileMenu,
-    closeMobileMenu,
-    smoothScroll,
-    getState: () => state,
-    getConfig: () => config
-  };
-})();
-
-// ===== ГЛОБАЛЬНЫЕ ФУНКЦИИ =====
-// Инициализация при полной загрузке DOM
-document.addEventListener('DOMContentLoaded', SerbiaWebsite.init);
-
-// Экспорт для глобального доступа (для отладки)
-window.SerbiaWebsite = SerbiaWebsite;
-
-// ===== ДОПОЛНИТЕЛЬНЫЕ ЭФФЕКТЫ =====
-// Эффект частиц для фона (опционально)
-function createParticles() {
-  const particlesContainer = document.createElement('div');
-  particlesContainer.className = 'particles-container';
-  particlesContainer.style.position = 'fixed';
-  particlesContainer.style.top = '0';
-  particlesContainer.style.left = '0';
-  particlesContainer.style.width = '100%';
-  particlesContainer.style.height = '100%';
-  particlesContainer.style.pointerEvents = 'none';
-  particlesContainer.style.zIndex = '-1';
-  
-  document.body.appendChild(particlesContainer);
-  
-  // Цвета частиц в стиле Сербии
-  const particleColors = [
-    'rgba(12, 46, 96, 0.1)',
-    'rgba(200, 16, 46, 0.1)',
-    'rgba(248, 195, 0, 0.1)',
-    'rgba(139, 69, 19, 0.1)'
-  ];
-  
-  // Создаём частицы
-  for (let i = 0; i < 50; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    
-    // Случайные параметры
-    const size = Math.random() * 10 + 5;
-    const color = particleColors[Math.floor(Math.random() * particleColors.length)];
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
-    const duration = Math.random() * 20 + 10;
-    
-    particle.style.position = 'absolute';
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.background = color;
-    particle.style.borderRadius = '50%';
-    particle.style.left = `${x}vw`;
-    particle.style.top = `${y}vh`;
-    particle.style.opacity = '0.3';
-    particle.style.animation = `float ${duration}s infinite ease-in-out`;
-    
-    particlesContainer.appendChild(particle);
-  }
-  
-  // Добавляем анимацию
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes float {
-      0%, 100% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-      25% {
-        transform: translate(10px, -10px) rotate(90deg);
-      }
-      50% {
-        transform: translate(0, -20px) rotate(180deg);
-      }
-      75% {
-        transform: translate(-10px, -10px) rotate(270deg);
-      }
-    }
-  `;
-  document.head.appendChild(style);
+        progress += Math.random() * 10;
+        if (progress > 100) {
+            progress = 100;
+            clearInterval(interval);
+        }
+        loader.querySelector('.loader-bar').style.width = `${progress}%`;
+    }, 100);
 }
 
-// Инициализация частиц при полной загрузке
-window.addEventListener('load', () => {
-  // Можно включить или отключить этот эффект
-  // createParticles();
-});
-
-// ===== КОНТЕКСТНОЕ МЕНЮ С СЕРБСКОЙ ТЕМОЙ =====
-document.addEventListener('contextmenu', (e) => {
-  // Создаём кастомное контекстное меню
-  e.preventDefault();
-  
-  const customMenu = document.createElement('div');
-  customMenu.className = 'serbian-context-menu';
-  customMenu.innerHTML = `
-    <div class="menu-item" data-action="home">🏠 На главную</div>
-    <div class="menu-item" data-action="nature">🏔️ Природа</div>
-    <div class="menu-item" data-action="cuisine">🍴 Кухня</div>
-    <div class="divider"></div>
-    <div class="menu-item" data-action="share">📤 Поделиться</div>
-  `;
-  
-  customMenu.style.position = 'fixed';
-  customMenu.style.left = `${e.clientX}px`;
-  customMenu.style.top = `${e.clientY}px`;
-  customMenu.style.background = 'white';
-  customMenu.style.borderRadius = 'var(--radius-small)';
-  customMenu.style.boxShadow = 'var(--shadow-hard)';
-  customMenu.style.zIndex = '10000';
-  customMenu.style.padding = '0.5rem 0';
-  customMenu.style.minWidth = '150px';
-  
-  document.body.appendChild(customMenu);
-  
-  // Обработчики для пунктов меню
-  customMenu.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const action = item.dataset.action;
-      handleContextMenuAction(action);
-      document.body.removeChild(customMenu);
-    });
-    
-    item.style.padding = '0.5rem 1rem';
-    item.style.cursor = 'pointer';
-    item.style.transition = 'background 0.2s ease';
-    
-    item.addEventListener('mouseenter', () => {
-      item.style.background = 'var(--serbian-white)';
-    });
-    
-    item.addEventListener('mouseleave', () => {
-      item.style.background = 'white';
-    });
-  });
-  
-  // Закрытие меню при клике вне его
-  setTimeout(() => {
-    document.addEventListener('click', closeCustomMenu);
-  }, 10);
-  
-  function closeCustomMenu() {
-    if (document.body.contains(customMenu)) {
-      document.body.removeChild(customMenu);
+function removeLoadingScreen() {
+    const loader = document.getElementById('serbia-loader');
+    if (loader) {
+        loader.style.opacity = '0';
+        loader.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => loader.remove(), 500);
     }
-    document.removeEventListener('click', closeCustomMenu);
-  }
-  
-  function handleContextMenuAction(action) {
-    switch(action) {
-      case 'home':
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        break;
-      case 'nature':
-        const natureSection = document.getElementById('nature');
-        if (natureSection) {
-          window.scrollTo({
-            top: natureSection.offsetTop - 80,
-            behavior: 'smooth'
-          });
-        }
-        break;
-      case 'cuisine':
-        const cuisineSection = document.getElementById('cuisine');
-        if (cuisineSection) {
-          window.scrollTo({
-            top: cuisineSection.offsetTop - 80,
-            behavior: 'smooth'
-          });
-        }
-        break;
-      case 'share':
-        if (navigator.share) {
-          navigator.share({
-            title: 'Сербия - Душа Балкан',
-            text: 'Откройте для себя удивительную Сербию!',
-            url: window.location.href
-          });
-        } else {
-          navigator.clipboard.writeText(window.location.href);
-          alert('Ссылка скопирована в буфер обмена!');
-        }
-        break;
-    }
-  }
-});
-
-// ===== КЛАВИАТУРНЫЕ СОЧЕТАНИЯ =====
-document.addEventListener('keydown', (e) => {
-  // Alt + S - прокрутка к началу (Сербия)
-  if (e.altKey && e.key === 's') {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-  
-  // Alt + N - природа
-  if (e.altKey && e.key === 'n') {
-    e.preventDefault();
-    const natureSection = document.getElementById('nature');
-    if (natureSection) {
-      window.scrollTo({
-        top: natureSection.offsetTop - 80,
-        behavior: 'smooth'
-      });
-    }
-  }
-  
-  // Alt + K - кухня
-  if (e.altKey && e.key === 'k') {
-    e.preventDefault();
-    const cuisineSection = document.getElementById('cuisine');
-    if (cuisineSection) {
-      window.scrollTo({
-        top: cuisineSection.offsetTop - 80,
-        behavior: 'smooth'
-      });
-    }
-  }
-  
-  // Escape - закрытие меню
-  if (e.key === 'Escape') {
-    SerbiaWebsite.closeMobileMenu();
-    
-    // Закрытие кастомных меню
-    const customMenu = document.querySelector('.serbian-context-menu');
-    if (customMenu) {
-      document.body.removeChild(customMenu);
-    }
-  }
-});
-
-// ===== ОПТИМИЗАЦИЯ ПРОИЗВОДИТЕЛЬНОСТИ =====
-// Отложенная загрузка не критичных ресурсов
-function loadDeferredResources() {
-  // Загружаем дополнительные шрифты
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap';
-  link.onload = () => {
-    console.log('Дополнительные шрифты загружены');
-  };
-  document.head.appendChild(link);
-  
-  // Предзагрузка изображений для следующей страницы
-  const preloadImages = [
-    'manastir-raca.jpg',
-    'culture-festival.jpg',
-    'culture-music.jpg'
-  ];
-  
-  preloadImages.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
 }
 
-// Запускаем через 3 секунды после загрузки
-setTimeout(loadDeferredResources, 3000);
+// ===== GLASS MORPHISM EFFECTS =====
+function initGlassEffects() {
+    // Add glass effect to cards on hover
+    document.querySelectorAll('.card, .food-card').forEach(card => {
+        card.style.transition = 'all 0.3s ease';
+        
+        card.addEventListener('mouseenter', () => {
+            card.style.backdropFilter = `blur(${CONFIG.glassBlur})`;
+            card.style.backgroundColor = `rgba(255, 255, 255, ${CONFIG.glassOpacity})`;
+            card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.backdropFilter = 'none';
+            card.style.backgroundColor = '';
+            card.style.borderColor = '';
+        });
+    });
+    
+    // Add glass effect to navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        navbar.style.backdropFilter = `blur(${CONFIG.glassBlur})`;
+        navbar.style.backgroundColor = `rgba(21, 21, 21, 0.8)`;
+    }
+    
+    // Create floating glass elements
+    createFloatingGlass();
+}
 
-// ===== ИНФОРМАЦИЯ О ПРОЕКТЕ =====
-console.log(`
-%c🇷🇸 СЕРБИЯ - ДУША БАЛКАН %c
-%cВерсия: 1.0.0
-Дата: ${new Date().toLocaleDateString()}
-Автор: Современный веб-дизайн
-Стиль: Этно-минимализм + Урбанизм
+function createFloatingGlass() {
+    const floatingContainer = document.createElement('div');
+    floatingContainer.className = 'floating-glass';
+    floatingContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    `;
+    
+    document.body.appendChild(floatingContainer);
+    
+    // Create floating glass shapes
+    const shapes = [
+        { size: '200px', x: '10%', y: '20%', color: 'rgba(139, 92, 246, 0.1)' },
+        { size: '300px', x: '80%', y: '40%', color: 'rgba(16, 185, 129, 0.1)' },
+        { size: '150px', x: '30%', y: '70%', color: 'rgba(245, 158, 11, 0.1)' },
+        { size: '250px', x: '70%', y: '10%', color: 'rgba(139, 92, 246, 0.05)' }
+    ];
+    
+    shapes.forEach((shape, i) => {
+        const el = document.createElement('div');
+        el.className = 'glass-shape';
+        el.style.cssText = `
+            position: absolute;
+            width: ${shape.size};
+            height: ${shape.size};
+            background: ${shape.color};
+            backdrop-filter: blur(40px);
+            border-radius: 50%;
+            left: ${shape.x};
+            top: ${shape.y};
+            filter: blur(40px);
+            opacity: 0.5;
+            animation: float${i} 20s infinite ease-in-out;
+        `;
+        
+        // Add unique animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float${i} {
+                0%, 100% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                33% {
+                    transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(120deg);
+                }
+                66% {
+                    transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(240deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        floatingContainer.appendChild(el);
+    });
+}
 
-Управление:
-• Alt+S - На главную
-• Alt+N - Природа
-• Alt+K - Кухня
-• Escape - Закрыть меню
+// ===== PARALLAX EFFECTS =====
+function initParallax() {
+    // Add data attributes for parallax elements
+    document.querySelectorAll('.nature-card, .gallery-item').forEach((el, i) => {
+        el.setAttribute('data-parallax', 'true');
+        el.setAttribute('data-depth', (0.1 + i * 0.05).toFixed(2));
+    });
+    
+    // Hero title parallax
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+        heroTitle.setAttribute('data-parallax', 'true');
+        heroTitle.setAttribute('data-depth', '0.3');
+    }
+}
 
-Наслаждайтесь путешествием по Сербии!
-`, 
-'background: linear-gradient(135deg, #0c2e60, #c8102e); color: white; padding: 10px; border-radius: 5px; font-size: 16px;',
-'',
-'color: #666; line-height: 1.5;'
-);
+function startParallax() {
+    if (STATE.isMobile) return;
+    
+    let ticking = false;
+    
+    const updateParallax = () => {
+        const scrolled = window.pageYOffset;
+        
+        document.querySelectorAll('[data-parallax="true"]').forEach(el => {
+            const depth = parseFloat(el.getAttribute('data-depth') || CONFIG.parallaxIntensity);
+            const movement = -(scrolled * depth);
+            el.style.transform = `translate3d(0, ${movement}px, 0)`;
+        });
+        
+        // Mouse parallax for hero
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+            const xMovement = (STATE.mouseX / window.innerWidth - 0.5) * 20;
+            const yMovement = (STATE.mouseY / window.innerHeight - 0.5) * 20;
+            heroContent.style.transform = `translate3d(${xMovement}px, ${yMovement}px, 0)`;
+        }
+        
+        ticking = false;
+    };
+    
+    const requestTick = () => {
+        if (!ticking) {
+            requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    };
+    
+    window.addEventListener('scroll', requestTick);
+    window.addEventListener('mousemove', requestTick);
+}
 
-// Экспорт для использования в консоли
-window.debugSerbia = {
-  reloadImages: () => {
+// ===== PARTICLE SYSTEM =====
+function initParticles() {
+    if (STATE.isMobile) return;
+    
+    const particleContainer = document.createElement('div');
+    particleContainer.className = 'particles';
+    particleContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    `;
+    
+    document.body.appendChild(particleContainer);
+    STATE.particleContainer = particleContainer;
+}
+
+function startParticleSystem() {
+    if (STATE.isMobile || !STATE.particleContainer) return;
+    
+    const colors = [
+        'rgba(139, 92, 246, 0.5)',
+        'rgba(16, 185, 129, 0.5)',
+        'rgba(245, 158, 11, 0.5)',
+        'rgba(255, 255, 255, 0.3)'
+    ];
+    
+    // Create particles
+    for (let i = 0; i < CONFIG.particleCount; i++) {
+        createParticle(i);
+    }
+    
+    function createParticle(index) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 4 + 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
+            border-radius: 50%;
+            left: ${x}vw;
+            top: ${y}vh;
+            opacity: 0.7;
+            filter: blur(1px);
+            animation: particleFloat ${duration}s infinite ease-in-out ${delay}s;
+        `;
+        
+        STATE.particleContainer.appendChild(particle);
+        
+        // Add animation
+        if (!document.querySelector('#particle-animations')) {
+            const style = document.createElement('style');
+            style.id = 'particle-animations';
+            style.textContent = `
+                @keyframes particleFloat {
+                    0%, 100% {
+                        transform: translate(0, 0) rotate(0deg);
+                        opacity: 0.7;
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(90deg);
+                        opacity: 0.4;
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(180deg);
+                        opacity: 0.7;
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(270deg);
+                        opacity: 0.4;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Restart animation when complete
+        particle.addEventListener('animationiteration', () => {
+            // Occasionally change particle properties
+            if (Math.random() > 0.7) {
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+            }
+        });
+    }
+}
+
+// ===== MOUSE EFFECTS =====
+function initMouseEffects() {
+    if (STATE.isMobile) return;
+    
+    // Custom cursor
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    cursor.style.cssText = `
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #8b5cf6;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
+        transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
+    `;
+    
+    const cursorDot = document.createElement('div');
+    cursorDot.className = 'cursor-dot';
+    cursorDot.style.cssText = `
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: #10b981;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        mix-blend-mode: difference;
+        transition: transform 0.2s ease;
+    `;
+    
+    document.body.appendChild(cursor);
+    document.body.appendChild(cursorDot);
+    document.body.style.cursor = 'none';
+    
+    // Update cursor position
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = `${e.clientX - 10}px`;
+        cursor.style.top = `${e.clientY - 10}px`;
+        cursorDot.style.left = `${e.clientX - 2}px`;
+        cursorDot.style.top = `${e.clientY - 2}px`;
+        
+        // Update mouse trail
+        STATE.mouseTrail.push({ x: e.clientX, y: e.clientY });
+        if (STATE.mouseTrail.length > CONFIG.mouseTrailLength) {
+            STATE.mouseTrail.shift();
+        }
+        
+        STATE.mouseX = e.clientX;
+        STATE.mouseY = e.clientY;
+    });
+    
+    // Hover effects
+    const hoverElements = document.querySelectorAll('a, button, .card, .gallery-item');
+    hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.width = '40px';
+            cursor.style.height = '40px';
+            cursor.style.borderColor = '#10b981';
+            cursorDot.style.transform = 'scale(1.5)';
+        });
+        
+        el.addEventListener('mouseleave', () => {
+            cursor.style.width = '20px';
+            cursor.style.height = '20px';
+            cursor.style.borderColor = '#8b5cf6';
+            cursorDot.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Click effect
+    document.addEventListener('click', (e) => {
+        createRipple(e.clientX, e.clientY);
+    });
+}
+
+function startMouseTrail() {
+    if (STATE.isMobile) return;
+    
+    const trailContainer = document.createElement('div');
+    trailContainer.className = 'mouse-trail';
+    trailContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9997;
+    `;
+    
+    document.body.appendChild(trailContainer);
+    
+    // Create trail dots
+    const trailDots = [];
+    for (let i = 0; i < CONFIG.mouseTrailLength; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'trail-dot';
+        dot.style.cssText = `
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #8b5cf6, #10b981);
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        `;
+        trailContainer.appendChild(dot);
+        trailDots.push(dot);
+    }
+    
+    // Update trail animation
+    function updateTrail() {
+        STATE.mouseTrail.forEach((pos, i) => {
+            const dot = trailDots[i];
+            if (dot) {
+                const opacity = (i / STATE.mouseTrail.length) * 0.5;
+                const scale = 1 - (i / STATE.mouseTrail.length) * 0.5;
+                
+                dot.style.left = `${pos.x}px`;
+                dot.style.top = `${pos.y}px`;
+                dot.style.opacity = opacity;
+                dot.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            }
+        });
+        
+        requestAnimationFrame(updateTrail);
+    }
+    
+    updateTrail();
+}
+
+function createRipple(x, y) {
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple-effect';
+    ripple.style.cssText = `
+        position: fixed;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        left: ${x - 50}px;
+        top: ${y - 50}px;
+        pointer-events: none;
+        z-index: 9996;
+        transform: scale(0);
+        animation: rippleExpand 0.6s ease-out;
+    `;
+    
+    document.body.appendChild(ripple);
+    
+    // Add animation
+    if (!document.querySelector('#ripple-animation')) {
+        const style = document.createElement('style');
+        style.id = 'ripple-animation';
+        style.textContent = `
+            @keyframes rippleExpand {
+                0% {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(3);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Remove after animation
+    setTimeout(() => ripple.remove(), 600);
+}
+
+// ===== SMOOTH SCROLLING =====
+function initSmoothScrolling() {
+    // Add smooth scroll to all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || href === '#!') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                smoothScrollTo(target);
+                
+                // Update URL without page reload
+                history.pushState(null, null, href);
+            }
+        });
+    });
+    
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => {
+        const hash = window.location.hash;
+        if (hash) {
+            const target = document.querySelector(hash);
+            if (target) smoothScrollTo(target);
+        }
+    });
+}
+
+function smoothScrollTo(target) {
+    const start = window.pageYOffset;
+    const targetPos = target.getBoundingClientRect().top + start - 80;
+    const distance = targetPos - start;
+    const duration = 1000;
+    let startTime = null;
+    
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        // Easing function
+        const ease = easeOutQuart(progress);
+        window.scrollTo(0, start + distance * ease);
+        
+        if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+        }
+    }
+    
+    requestAnimationFrame(animation);
+    
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+}
+
+// ===== IMAGE REVEAL EFFECTS =====
+function initImageReveal() {
+    // Count images
+    STATE.totalImages = document.querySelectorAll('img').length;
+    
+    // Add reveal effect to images
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.style.opacity = '0';
+        img.style.transform = 'scale(0.95)';
+        img.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        
+        img.addEventListener('load', () => {
+            STATE.loadedImages.add(img.src);
+            revealImage(img);
+            updateProgress();
+        });
+        
+        // Fallback for cached images
+        if (img.complete) {
+            img.dispatchEvent(new Event('load'));
+        }
+    });
+}
+
+function revealImage(img) {
+    // Random delay for staggered reveal
+    const delay = Math.random() * 300;
+    
+    setTimeout(() => {
+        img.style.opacity = '1';
+        img.style.transform = 'scale(1)';
+        
+        // Add subtle float animation
+        if (img.closest('.nature-card, .gallery-item')) {
+            img.style.transition += ', transform 3s ease-in-out';
+            setTimeout(() => {
+                img.style.transform = 'scale(1.02)';
+            }, delay + 100);
+        }
+    }, delay);
+}
+
+function updateProgress() {
+    const progress = (STATE.loadedImages.size / STATE.totalImages) * 100;
+    
+    // Update loader if exists
+    const loaderBar = document.querySelector('.loader-bar');
+    if (loaderBar) {
+        loaderBar.style.width = `${progress}%`;
+    }
+    
+    if (progress === 100) {
+        console.log('✨ Все изображения загружены');
+        document.body.classList.add('images-loaded');
+    }
+}
+
+// ===== LAZY LOADING =====
+function initLazyLoad() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                loadImage(img);
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '50px',
+        threshold: CONFIG.lazyLoadThreshold
+    });
+    
+    // Observe all images
     document.querySelectorAll('img').forEach(img => {
-      const src = img.src;
-      img.src = '';
-      img.src = src;
+        if (img.dataset.src) {
+            observer.observe(img);
+        }
     });
-    console.log('Изображения перезагружены');
-  },
-  showStats: () => {
-    const stats = SerbiaWebsite.getState();
-    console.table(stats);
-  },
-  toggleEffects: () => {
-    document.body.classList.toggle('no-effects');
-    console.log('Эффекты ' + (document.body.classList.contains('no-effects') ? 'отключены' : 'включены'));
-  }
+    
+    // Observe other elements
+    document.querySelectorAll('.card, .section').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+function loadImage(img) {
+    if (img.dataset.src) {
+        const src = img.dataset.src;
+        img.src = src;
+        delete img.dataset.src;
+    }
+}
+
+// ===== SCROLL ANIMATIONS =====
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                
+                // Add different animations based on element type
+                if (element.classList.contains('card')) {
+                    animateCard(element);
+                } else if (element.classList.contains('nature-card')) {
+                    animateNatureCard(element);
+                } else if (element.classList.contains('gallery-item')) {
+                    animateGalleryItem(element);
+                } else if (element.tagName === 'SECTION') {
+                    animateSection(element);
+                }
+                
+                observer.unobserve(element);
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    // Observe all animatable elements
+    document.querySelectorAll('.card, .nature-card, .gallery-item, section').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+function animateCard(card) {
+    const delay = Array.from(document.querySelectorAll('.card')).indexOf(card) * 100;
+    
+    setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0) rotateX(0)';
+        card.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    }, delay);
+}
+
+function animateNatureCard(card) {
+    card.style.opacity = '1';
+    card.style.transform = 'scale(1)';
+    card.style.transition = 'all 0.8s ease';
+    
+    // Add floating effect
+    card.style.animation = 'floatCard 6s ease-in-out infinite';
+    
+    if (!document.querySelector('#float-animation')) {
+        const style = document.createElement('style');
+        style.id = 'float-animation';
+        style.textContent = `
+            @keyframes floatCard {
+                0%, 100% {
+                    transform: translateY(0) scale(1);
+                }
+                50% {
+                    transform: translateY(-10px) scale(1.02);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function animateGalleryItem(item) {
+    const index = Array.from(document.querySelectorAll('.gallery-item')).indexOf(item);
+    const delay = index * 50;
+    
+    setTimeout(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'scale(1)';
+        
+        // Add wave effect
+        item.style.transition = `
+            opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${delay}ms,
+            transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${delay}ms
+        `;
+    }, delay);
+}
+
+function animateSection(section) {
+    section.style.opacity = '1';
+    section.style.transform = 'translateY(0)';
+}
+
+// ===== PAGE TRANSITIONS =====
+function initPageTransitions() {
+    // Add transition styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a, #151515);
+            z-index: 9998;
+            transform: translateY(100%);
+        }
+        
+        .transition-active {
+            transform: translateY(0);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        
+        .transition-exit {
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1) 0.1s;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// ===== PAGE INTRO ANIMATION =====
+function initPageIntro() {
+    // Animate hero elements
+    const heroTitle = document.querySelector('.hero h1');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    const heroButtons = document.querySelector('.btn-group');
+    
+    if (heroTitle) {
+        heroTitle.style.opacity = '0';
+        heroTitle.style.transform = 'translateY(30px)';
+        heroTitle.style.transition = 'all 0.8s ease';
+        
+        setTimeout(() => {
+            heroTitle.style.opacity = '1';
+            heroTitle.style.transform = 'translateY(0)';
+            
+            // Text character animation
+            animateText(heroTitle);
+        }, 300);
+    }
+    
+    if (heroSubtitle) {
+        setTimeout(() => {
+            heroSubtitle.style.opacity = '1';
+            heroSubtitle.style.transform = 'translateY(0)';
+        }, 600);
+    }
+    
+    if (heroButtons) {
+        setTimeout(() => {
+            heroButtons.style.opacity = '1';
+            heroButtons.style.transform = 'translateY(0)';
+        }, 900);
+    }
+    
+    // Animate logo
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.style.animation = 'logoIntro 1s ease-out';
+        
+        if (!document.querySelector('#logo-animation')) {
+            const style = document.createElement('style');
+            style.id = 'logo-animation';
+            style.textContent = `
+                @keyframes logoIntro {
+                    0% {
+                        transform: translateY(-20px);
+                        opacity: 0;
+                    }
+                    100% {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+}
+
+function animateText(element) {
+    const text = element.textContent;
+    element.textContent = '';
+    
+    for (let i = 0; i < text.length; i++) {
+        const span = document.createElement('span');
+        span.textContent = text[i];
+        span.style.display = 'inline-block';
+        span.style.opacity = '0';
+        span.style.transform = 'translateY(20px)';
+        span.style.transition = `all 0.3s ease ${i * 0.05}s`;
+        
+        element.appendChild(span);
+        
+        setTimeout(() => {
+            span.style.opacity = '1';
+            span.style.transform = 'translateY(0)';
+        }, 100 + i * 30);
+    }
+}
+
+// ===== NAVIGATION =====
+function initNavigation() {
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (mobileToggle && navLinks) {
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+            
+            // Add glass effect to mobile menu
+            if (navLinks.classList.contains('active')) {
+                navLinks.style.backdropFilter = `blur(${CONFIG.glassBlur})`;
+                navLinks.style.backgroundColor = `rgba(21, 21, 21, 0.95)`;
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close menu on link click
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileToggle.textContent = '☰';
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // Close menu on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                mobileToggle.textContent = '☰';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+    
+    // Update active nav link on scroll
+    window.addEventListener('scroll', throttle(() => {
+        const sections = document.querySelectorAll('section[id]');
+        const scrollPos = window.scrollY + 100;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, CONFIG.throttleDelay));
+}
+
+// ===== EVENT LISTENERS =====
+function setupEventListeners() {
+    // Throttled scroll handler
+    window.addEventListener('scroll', throttle(() => {
+        STATE.scrollY = window.pageYOffset;
+        
+        // Update navbar
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            if (STATE.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+        
+        // Update scroll state
+        STATE.isScrolling = true;
+        clearTimeout(STATE.scrollTimeout);
+        STATE.scrollTimeout = setTimeout(() => {
+            STATE.isScrolling = false;
+        }, 100);
+    }, CONFIG.throttleDelay));
+    
+    // Resize handler
+    window.addEventListener('resize', throttle(() => {
+        detectDevice();
+    }, 200));
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Space to scroll down
+        if (e.code === 'Space' && !e.target.matches('input, textarea, select')) {
+            e.preventDefault();
+            window.scrollBy({
+                top: window.innerHeight * 0.8,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Arrow keys navigation
+        if (e.code === 'ArrowDown') {
+            e.preventDefault();
+            window.scrollBy({ top: 100, behavior: 'smooth' });
+        } else if (e.code === 'ArrowUp') {
+            e.preventDefault();
+            window.scrollBy({ top: -100, behavior: 'smooth' });
+        }
+        
+        // Ctrl/Cmd + K to focus search (if any)
+        if ((e.ctrlKey || e.metaKey) && e.code === 'KeyK') {
+            e.preventDefault();
+            // Could add search functionality here
+        }
+    });
+    
+    // Context menu
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        
+        // Create custom context menu
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.innerHTML = `
+            <div class="menu-item" data-action="scroll-top">⬆️ Наверх</div>
+            <div class="menu-item" data-action="scroll-bottom">⬇️ Вниз</div>
+            <div class="divider"></div>
+            <div class="menu-item" data-action="reload">🔄 Обновить</div>
+        `;
+        
+        menu.style.cssText = `
+            position: fixed;
+            left: ${e.clientX}px;
+            top: ${e.clientY}px;
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(${CONFIG.glassBlur});
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        `;
+        
+        document.body.appendChild(menu);
+        
+        // Menu item styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .menu-item {
+                padding: 10px 16px;
+                color: #f0f0f0;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background 0.2s ease;
+            }
+            .menu-item:hover {
+                background: rgba(139, 92, 246, 0.2);
+            }
+            .divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.1);
+                margin: 8px 0;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Handle menu actions
+        menu.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const action = item.dataset.action;
+                
+                switch(action) {
+                    case 'scroll-top':
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        break;
+                    case 'scroll-bottom':
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        break;
+                    case 'reload':
+                        location.reload();
+                        break;
+                }
+                
+                menu.remove();
+            });
+        });
+        
+        // Remove menu on click outside
+        setTimeout(() => {
+            document.addEventListener('click', function removeMenu(e) {
+                if (!menu.contains(e.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', removeMenu);
+                }
+            });
+        }, 10);
+    });
+}
+
+// ===== UTILITY FUNCTIONS =====
+function detectDevice() {
+    STATE.isMobile = window.innerWidth <= 768;
+    
+    // Update body class
+    if (STATE.isMobile) {
+        document.body.classList.add('is-mobile');
+        document.body.classList.remove('is-desktop');
+    } else {
+        document.body.classList.add('is-desktop');
+        document.body.classList.remove('is-mobile');
+    }
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ===== DEBUG MODE =====
+// Add debug controls (hold Shift + D)
+let debugKeys = [];
+document.addEventListener('keydown', (e) => {
+    debugKeys.push(e.key);
+    if (debugKeys.length > 2) debugKeys.shift();
+    
+    if (debugKeys.join('') === 'ShiftD') {
+        toggleDebugMode();
+        debugKeys = [];
+    }
+});
+
+function toggleDebugMode() {
+    document.body.classList.toggle('debug-mode');
+    
+    // Add debug info
+    if (document.body.classList.contains('debug-mode')) {
+        const debugPanel = document.createElement('div');
+        debugPanel.id = 'debug-panel';
+        debugPanel.innerHTML = `
+            <div class="debug-info">
+                <div>Scroll: ${Math.round(STATE.scrollY)}px</div>
+                <div>Images: ${STATE.loadedImages.size}/${STATE.totalImages}</div>
+                <div>Mobile: ${STATE.isMobile}</div>
+                <div>FPS: <span id="fps-counter">60</span></div>
+            </div>
+        `;
+        
+        debugPanel.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 10000;
+            border: 1px solid #10b981;
+        `;
+        
+        document.body.appendChild(debugPanel);
+        
+        // FPS counter
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function updateFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                const fpsCounter = document.getElementById('fps-counter');
+                if (fpsCounter) fpsCounter.textContent = fps;
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+        
+        updateFPS();
+        
+        // Update debug info
+        setInterval(() => {
+            const info = debugPanel.querySelector('.debug-info');
+            if (info) {
+                info.innerHTML = `
+                    <div>Scroll: ${Math.round(STATE.scrollY)}px</div>
+                    <div>Images: ${STATE.loadedImages.size}/${STATE.totalImages}</div>
+                    <div>Mobile: ${STATE.isMobile}</div>
+                    <div>FPS: <span id="fps-counter">60</span></div>
+                    <div>Trail: ${STATE.mouseTrail.length}</div>
+                `;
+            }
+        }, 500);
+    } else {
+        const debugPanel = document.getElementById('debug-panel');
+        if (debugPanel) debugPanel.remove();
+    }
+}
+
+// ===== EXPORT FOR CONSOLE DEBUGGING =====
+window.Serbia = {
+    version: '1.0.0',
+    config: CONFIG,
+    state: STATE,
+    reloadEffects: () => {
+        // Clear existing effects
+        document.querySelectorAll('.particles, .floating-glass, .mouse-trail').forEach(el => el.remove());
+        
+        // Reinitialize
+        initGlassEffects();
+        startParticleSystem();
+        startMouseTrail();
+        
+        console.log('✨ Эффекты перезагружены');
+    },
+    toggleEffects: (type) => {
+        switch(type) {
+            case 'particles':
+                const particles = document.querySelector('.particles');
+                if (particles) {
+                    particles.style.display = particles.style.display === 'none' ? '' : 'none';
+                }
+                break;
+            case 'trail':
+                const trail = document.querySelector('.mouse-trail');
+                if (trail) {
+                    trail.style.display = trail.style.display === 'none' ? '' : 'none';
+                }
+                break;
+            case 'glass':
+                document.body.classList.toggle('no-glass');
+                break;
+        }
+    },
+    stats: () => {
+        return {
+            loaded: STATE.loadedImages.size,
+            total: STATE.totalImages,
+            progress: `${Math.round((STATE.loadedImages.size / STATE.totalImages) * 100)}%`,
+            scroll: STATE.scrollY,
+            mobile: STATE.isMobile
+        };
+    }
 };
+
+// Console greeting
+console.log(`
+%c
+   _____                       _       
+  / ____|                     (_)      
+ | (___   ___ _ __ _   _ _ __  _  ___  
+  \\___ \\ / __| '__| | | | '_ \\| |/ _ \\ 
+  ____) | (__| |  | |_| | |_) | | (_) |
+ |_____/ \\___|_|   \\__, | .__/|_|\\___/ 
+                    __/ | |            
+                   |___/|_|            
+
+Modern JavaScript Experience for Serbia
+`, 'color: #8b5cf6; font-family: monospace;');
+
+console.log('🚀 Доступные команды:');
+console.log('- Serbia.reloadEffects() - Перезагрузить эффекты');
+console.log('- Serbia.toggleEffects("particles"/"trail"/"glass") - Включить/выключить эффекты');
+console.log('- Serbia.stats() - Статистика загрузки');
