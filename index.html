@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сербия встречает Новый Год - Традиции и празднование</title>
+    <title>Сербия встречает Новый Год 2026 - Традиции, праздники и рецепты</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@350;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* БАЗОВЫЕ СТИЛИ - ТЕМНАЯ ТЕМА */
         :root {
@@ -16,8 +16,8 @@
             --border-glass: rgba(255, 255, 255, 0.08);
             --border-glow: rgba(255, 255, 255, 0.15);
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.6);
-            --text-dim: rgba(255, 255, 255, 0.4);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-dim: rgba(255, 255, 255, 0.5);
             --accent-red: #c6363c;
             --accent-green: #00d4aa;
             --accent-gold: #ffd700;
@@ -37,7 +37,7 @@
 
         body {
             font-family: 'Space Grotesk', sans-serif;
-            font-weight: 400;
+            font-weight: 450;
             background: var(--bg-dark);
             color: var(--text-primary);
             line-height: 1.6;
@@ -71,7 +71,7 @@
                         radial-gradient(ellipse at 20% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 40%);
         }
 
-        /* СНЕГ НА ФОНЕ */
+        /* СНЕГ НА ФОНЕ - ИСПРАВЛЕНО: БЕЛЫЙ И НЕНАВЯЗЧИВЫЙ */
         .snow-background {
             position: fixed;
             top: 0;
@@ -85,10 +85,10 @@
 
         .snowflake-bg {
             position: absolute;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
             animation: snowfall-bg linear infinite;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
         }
 
         @keyframes snowfall-bg {
@@ -97,10 +97,10 @@
                 opacity: 0;
             }
             10% {
-                opacity: 0.6;
+                opacity: 0.4;
             }
             90% {
-                opacity: 0.6;
+                opacity: 0.4;
             }
             100% {
                 transform: translateY(100vh) rotate(360deg);
@@ -560,6 +560,54 @@
             font-size: 1.05rem;
         }
 
+        /* NEW: GALLERY SECTION */
+        .gallery {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .gallery-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .gallery-item {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            transition: all 0.4s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--border-glow);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        .gallery-caption {
+            padding: 20px;
+        }
+        .gallery-caption h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .gallery-caption p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
         /* EVENTS SECTION */
         .events {
             background: var(--bg-dark);
@@ -675,6 +723,82 @@
             stroke: var(--accent-gold);
         }
 
+        /* NEW: FOOD SECTION */
+        .food {
+            background: linear-gradient(180deg, transparent 0%, rgba(255, 215, 0, 0.03) 50%, transparent 100%);
+        }
+        .food-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        .food-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .food-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-glow);
+        }
+        .food-image {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .food-card:hover .food-image img {
+            transform: scale(1.1);
+        }
+        .food-content {
+            padding: 30px;
+        }
+        .food-content h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--accent-gold);
+        }
+        .food-content p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .recipe {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid var(--accent-gold);
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 20px;
+        }
+        .recipe h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        .recipe ul {
+            padding-left: 20px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .recipe li {
+            margin-bottom: 8px;
+        }
+
         /* TRADITIONS SECTION */
         .traditions {
             background: linear-gradient(180deg, transparent 0%, rgba(0, 212, 170, 0.02) 50%, transparent 100%);
@@ -741,7 +865,7 @@
         }
 
         .tradition-content p {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 16px;
@@ -812,6 +936,9 @@
             
             .traditions-grid {
                 grid-template-columns: 1fr;
+            }
+            .gallery-grid, .food-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -913,6 +1040,9 @@
             footer {
                 padding: 60px 24px 24px;
             }
+            .gallery-grid, .food-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -950,6 +1080,8 @@
         <nav id="nav">
             <a href="#hero">Главная</a>
             <a href="#about">О Сербии</a>
+            <a href="#gallery">Фотоальбом</a>
+            <a href="#food">Блюда и рецепты</a>
             <a href="#events">События</a>
             <a href="#traditions">Традиции</a>
         </nav>
@@ -1092,17 +1224,134 @@
                     </div>
                     <p id="wish-counter" style="margin-top: 15px; font-size: 0.9rem; color: var(--accent-green);"></p>
                 </div>
-                
-                <div class="about-templatemo" style="margin-top: 40px; padding: 28px; background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: 20px; position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent-green), var(--accent-gold));"></div>
-                    <p style="font-size: 0.95rem; margin-bottom: 20px; color: var(--text-secondary);">Узнайте, как сербы сочетают православные традиции, балканское гостеприимство и современные новогодние празднования!</p>
-                    <a href="#traditions" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: linear-gradient(135deg, var(--accent-green), #00b894); border-radius: 12px; color: var(--bg-dark); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;">
-                        <span>Изучить традиции</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; stroke: var(--bg-dark);">
-                            <line x1="7" y1="17" x2="17" y2="7"></line>
-                            <polyline points="7 7 17 7 17 17"></polyline>
-                        </svg>
-                    </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="section-header">
+            <span class="section-tag">Фотоальбом</span>
+            <h2 class="section-title">Новогодняя Сербия в кадре</h2>
+            <p class="section-subtitle">Атмосфера праздника на улицах городов и в домах</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="images/gallery_belgrade_xmas_market.jpg" alt="Новогодний рынок в Белграде">
+                <div class="gallery-caption">
+                    <h4>Ярмарка на Кнез Михайловой</h4>
+                    <p>Главная пешеходная улица Белграда превращается в волшебный новогодний базар с угощениями, сувенирами и катком.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/gallery_family_dinner.jpg" alt="Семейный новогодний ужин">
+                <div class="gallery-caption">
+                    <h4>Семейное застолье</h4>
+                    <p>Богато накрытый стол — центр праздника. Печёный поросёнок, сарма, домашние колбасы и, конечно, чесница.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/gallery_kopaonik_snow.jpg" alt="Горнолыжный курорт Копаоник">
+                <div class="gallery-caption">
+                    <h4>Зимняя сказка Копаоника</h4>
+                    <p>Самый популярный горнолыжный курорт Сербии предлагает не только трассы, но и праздничную атмосферу в шале.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/gallery_fireworks_kalemegdan.jpg" alt="Фейерверк над крепостью Калемегдан">
+                <div class="gallery-caption">
+                    <h4>Фейерверк над Белградом</h4>
+                    <p>В полночь 31 декабря небо над крепостью Калемегдан и реками Савой и Дунаем озаряется ярким салютом.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: Food Section -->
+    <section class="food" id="food">
+        <div class="section-header">
+            <span class="section-tag">Кухня</span>
+            <h2 class="section-title">Традиционные блюда и рецепты</h2>
+            <p class="section-subtitle">Что готовят сербы на Новый год и как повторить это дома</p>
+        </div>
+        <div class="food-grid">
+            <div class="food-card">
+                <div class="food-image">
+                    <img src="images/food_cesnica.jpg" alt="Чесница (Česnica)">
+                </div>
+                <div class="food-content">
+                    <h3>Чесница (Česnica)</h3>
+                    <p>Символ сербского Нового года и Рождества. Это праздничный хлеб, в который запекают монетку. Тот, кому она достанется, будет самым удачливым в новом году.</p>
+                    <div class="recipe">
+                        <h4>Приблизительный рецепт:</h4>
+                        <ul>
+                            <li>1 кг муки</li>
+                            <li>500 мл тёплого молока</li>
+                            <li>50 г свежих дрожжей</li>
+                            <li>2 яйца + 1 для смазки</li>
+                            <li>100 г растопленного сливочного масла</li>
+                            <li>1 ч.л. сахара, соль</li>
+                            <li><strong>Важно:</strong> чистая монетка, обёрнутая в фольгу</li>
+                        </ul>
+                        <p>Замесить тесто, дать подойти. Вложить монетку, выпекать при 180°C до золотистой корочки.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="food-card">
+                <div class="food-image">
+                    <img src="images/food_pecenje.jpg" alt="Печёный поросёнок (Pečenje)">
+                </div>
+                <div class="food-content">
+                    <h3>Печёный поросёнок (Pečenje)</h3>
+                    <p>Главное блюдо праздничного стола. Целого молочного поросёнка медленно запекают на вертеле или в духовке, добиваясь хрустящей кожицы и сочного мяса.</p>
+                    <div class="recipe">
+                        <h4>Секрет приготовления:</h4>
+                        <ul>
+                            <li>Поросёнка натирают солью, чесноком, паприкой и растительным маслом.</li>
+                            <li>Запекают при невысокой температуре (около 160°C) несколько часов, периодически поливая образующимся соком.</li>
+                            <li>В конце температуру увеличивают для образования хрустящей "кожурки" (čvarci).</li>
+                            <li>Подают с луком, хреном и свежим хлебом.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="food-card">
+                <div class="food-image">
+                    <img src="images/food_rakija_med.jpg" alt="Ракия с мёдом">
+                </div>
+                <div class="food-content">
+                    <h3>Ракия с мёдом (Rakija sa medom)</h3>
+                    <p>Традиционный новогодний аперитив и способ согреться. Тёплая, ароматная сливовая ракия (šljivovica) с мёдом символизирует сладкую жизнь.</p>
+                    <div class="recipe">
+                        <h4>Как приготовить:</h4>
+                        <ul>
+                            <li>На 1 бутылку (0,7 л) качественной сливовой ракии взять 3-4 ст.л. густого мёда (лучше акациевого).</li>
+                            <li>Аккуратно подогреть ракию на водяной бане (НЕ кипятить!).</li>
+                            <li>Добавить мёд и размешивать до полного растворения.</li>
+                            <li>Добавить палочку корицы, гвоздику и цедру лимона по вкусу.</li>
+                            <li>Подавать тёплой в маленьких стопках.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="food-card">
+                <div class="food-image">
+                    <img src="images/food_sarma.jpg" alt="Сарма (Sarma)">
+                </div>
+                <div class="food-content">
+                    <h3>Сарма (Sarma)</h3>
+                    <p>Голубцы из квашеных капустных листьев с начинкой из смешанного фарша и риса. Обязательное блюдо для обильного праздничного стола.</p>
+                    <div class="recipe">
+                        <h4>Классическая начинка:</h4>
+                        <ul>
+                            <li>500 г свино-говяжьего фарша</li>
+                            <li>200 г риса</li>
+                            <li>1 луковица, обжаренная на масле</li>
+                            <li>Соль, перец, паприка, сушёная мята</li>
+                            <li>Кислые капустные листья для заворачивания</li>
+                            <li>На дно казана укладывают кости и копчёности, затем плотными рядами — сарму. Заливают водой и тушат 2-3 часа.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1195,7 +1444,7 @@
                         <span>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
+                                <polyline points="12 6 12 12 16 14"></line>
                             </svg>
                             31 декабря
                         </span>
